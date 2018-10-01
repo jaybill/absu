@@ -1,28 +1,118 @@
-#include <grx20.h>
-//#include <grxkeys.h>
 #include <conio.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 #include <stdio.h>
-#include <string.h>
 #include <time.h>
-#include "int.h"
+#include "graphics.h"
 
 // Define Constants
-#define COLOR_BACKGROUND 17
-#define COLOR_PLAYER 9
+#define COLOR_BACKGROUND BLACK
+#define COLOR_PLAYER MAGENTA
 #define PLAYER_MOVEMENT_DISTANCE 10
 #define SQUARE_SIZE 10
 #define TARGET_FPS 60
 #define MAX_FRAMESKIP 5
+#define SCREEN_WIDTH 320
+#define SCREEN_HEIGHT 200
 
 int renders = 0;
 int updates = 0;
+static bool exit_now = false;
 
-void render(double delta) { renders++; }
+struct player {
+  int32_t x, y, dx, dy;
+  struct graphics_rect rect;
+  bool clear;
+};
 
-void update() { updates++; }
+struct player player;
+
+static void player_draw(double delta) {
+  // Decide if we need to clear the existing square
+
+  if (player.clear) {
+    graphics_draw_rectangle(player.rect, COLOR_BACKGROUND);
+    player.clear = false;
+  }
+
+  // Set up new square
+  struct graphics_point rt2 = {player.x, player.y};
+  struct graphics_point bl2 = {player.x + SQUARE_SIZE, player.y + SQUARE_SIZE};
+  struct graphics_rect draw_rect = {rt2, bl2};
+
+  // Save this rectangle data so we can clear it later
+  player.rect = draw_rect;
+
+  // Draw new square
+  graphics_draw_rectangle(draw_rect, COLOR_PLAYER);
+}
+
+void render(double delta) {
+  player_draw(delta);
+  renders++;
+}
+
+static void player_step() {
+  // Get input
+  if (kbhit()) {
+    int key = getch();
+    if (key > 0) {
+      switch (key) {
+        case 'w':
+          player.dy = -PLAYER_MOVEMENT_DISTANCE;
+          break;
+        case 's':
+          player.dy = PLAYER_MOVEMENT_DISTANCE;
+          break;
+        case 'a':
+          player.dx = -PLAYER_MOVEMENT_DISTANCE;
+          break;
+        case 'd':
+          player.dx = PLAYER_MOVEMENT_DISTANCE;
+          break;
+        case 27:
+          exit_now = true;
+          break;
+      }
+    }
+  }
+  // Update x and y position of player, clamping movement to within screen
+  if (player.x + player.dx > -1 &&
+      player.x + player.dx < SCREEN_WIDTH - SQUARE_SIZE) {
+    player.x = player.x + player.dx;
+  } else if ((player.dx + player.x) - SQUARE_SIZE > SCREEN_WIDTH) {
+    player.x = SCREEN_WIDTH - SQUARE_SIZE;
+  }
+
+  if (player.y + player.dy > -1 &&
+      player.y + player.dy < SCREEN_HEIGHT - SQUARE_SIZE) {
+    player.y = player.y + player.dy;
+  } else if ((player.dy + player.y) - SQUARE_SIZE > SCREEN_HEIGHT) {
+    player.y = SCREEN_HEIGHT - SQUARE_SIZE;
+  }
+  if (player.dx != 0 || player.dy != 0) {
+    player.clear = true;
+  }
+
+  player.dy = 0;
+  player.dx = 0;
+}
+
+void update() {
+  player_step();
+  updates++;
+}
 
 int main() {
-  static bool exit_now = false;
+  // Try to start graphics mode
+
+  if (!graphics_start()) {
+    graphics_stop();
+    printf("\nERROR: Can't switch to VGA 320x200 8bpp\n");
+    return 1;
+  }
+
   int key = 0;
   int32_t skip_ticks = UCLOCKS_PER_SEC / TARGET_FPS;
   uclock_t next_game_tick = uclock();
@@ -30,13 +120,6 @@ int main() {
   int loops;
   float interpolation;
   while (!exit_now) {
-    if (kbhit()) {
-      key = getch();
-      if (key == 'a') {
-        exit_now = true;
-      }
-    }
-
     loops = 0;
     while (uclock() > next_game_tick && loops < MAX_FRAMESKIP) {
       update();
@@ -49,6 +132,8 @@ int main() {
         (float)(uclock() + skip_ticks - next_game_tick) / (float)(skip_ticks);
     render(interpolation);
   }
+
+  graphics_stop();
   uclock_t end_time = uclock();
   uclock_t total_time = end_time - start_time;
   float total_seconds = (float)total_time / (float)UCLOCKS_PER_SEC;
@@ -56,5 +141,6 @@ int main() {
   printf("Total time was %f seconds (%d ticks)\n", total_seconds, total_time);
   printf("Rendered %d times and updated %d times - update FPS: %f \n", renders,
          updates, fps);
+
   return 0;
 }

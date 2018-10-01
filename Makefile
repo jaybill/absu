@@ -6,7 +6,7 @@ CC = gcc
 all: molewarp.exe
 
 molewarp.exe: main.c
-	$(CC) $(FLAGS) -o molewarp.exe main.c -lgrx20 
+	$(CC) $(FLAGS) -o molewarp.exe main.c graphics.c -lgrx20 
 
 clean:
 	del *.exe
