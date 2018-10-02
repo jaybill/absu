@@ -2,7 +2,7 @@
 #define MW_GRAPHICS_H
 #include <stdbool.h>
 #include <stdint.h>
-#include <grx20.h>
+#include <mgrx.h>
 
 extern GrColor *egacolors;
 #define BLACK egacolors[0]

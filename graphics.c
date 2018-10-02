@@ -14,7 +14,7 @@ bool graphics_start() {
   return true;
 }
 
-void graphics_stop() { GrSetMode(GR_80_25_text); }
+void graphics_stop() { GrSetMode(GR_320_200_graphics); }
 
 void graphics_draw_rectangle(struct graphics_rect rect, GrColor color) {
   GrFilledBox(rect.tl.x, rect.tl.y, rect.br.x, rect.br.y, color);
