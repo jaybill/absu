@@ -1,8 +1,8 @@
 #ifndef MW_GRAPHICS_H
 #define MW_GRAPHICS_H
+#include <mgrx.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <mgrx.h>
 
 extern GrColor *egacolors;
 #define BLACK egacolors[0]
@@ -22,6 +22,9 @@ extern GrColor *egacolors;
 #define YELLOW egacolors[14]
 #define WHITE egacolors[15]
 
+#define SCREEN_WIDTH 320
+#define SCREEN_HEIGHT 200
+
 struct graphics_point {
   int32_t x, y;
 };
@@ -32,6 +35,8 @@ struct graphics_rect {
 
 bool graphics_start();
 void graphics_stop();
-void graphics_draw_rectangle(struct graphics_rect rect,GrColor color);
+void graphics_create_sprite();
+void graphics_draw_rectangle(struct graphics_rect rect);
+void graphics_render_frame();
 
 #endif  // !MW_GRAPHICS_H

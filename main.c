@@ -13,8 +13,6 @@
 #define SQUARE_SIZE 10
 #define TARGET_FPS 60
 #define MAX_FRAMESKIP 5
-#define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 200
 
 int renders = 0;
 int updates = 0;
@@ -29,13 +27,6 @@ struct player {
 struct player player;
 
 static void player_draw(double delta) {
-  // Decide if we need to clear the existing square
-
-  if (player.clear) {
-    graphics_draw_rectangle(player.rect, COLOR_BACKGROUND);
-    player.clear = false;
-  }
-
   // Set up new square
   struct graphics_point rt2 = {player.x, player.y};
   struct graphics_point bl2 = {player.x + SQUARE_SIZE, player.y + SQUARE_SIZE};
@@ -45,7 +36,8 @@ static void player_draw(double delta) {
   player.rect = draw_rect;
 
   // Draw new square
-  graphics_draw_rectangle(draw_rect, COLOR_PLAYER);
+  graphics_draw_rectangle(draw_rect);
+  graphics_render_frame();
 }
 
 void render(double delta) {
@@ -91,9 +83,6 @@ static void player_step() {
   } else if ((player.dy + player.y) - SQUARE_SIZE > SCREEN_HEIGHT) {
     player.y = SCREEN_HEIGHT - SQUARE_SIZE;
   }
-  if (player.dx != 0 || player.dy != 0) {
-    player.clear = true;
-  }
 
   player.dy = 0;
   player.dx = 0;
@@ -109,9 +98,11 @@ int main() {
 
   if (!graphics_start()) {
     graphics_stop();
+
     printf("\nERROR: Can't switch to VGA 320x200 8bpp\n");
     return 1;
   }
+  graphics_create_sprite();
 
   int key = 0;
   int32_t skip_ticks = UCLOCKS_PER_SEC / TARGET_FPS;

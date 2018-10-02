@@ -1,7 +1,9 @@
 #include "graphics.h"
 #include <stddef.h>
+#include <stdio.h>
 
-GrContext *graphics_grc;
+GrContext *sprite;
+GrContext *screen_buffer;
 GrColor *egacolors;
 
 bool graphics_start() {
@@ -9,13 +11,35 @@ bool graphics_start() {
     return false;
   }
   egacolors = GrAllocEgaColors();
-
   GrClearScreen(GrBlack());
+  screen_buffer = GrCreateContext(SCREEN_WIDTH, SCREEN_HEIGHT, NULL, NULL);
+  GrSetContext(screen_buffer);
+  GrClearContext(BLACK);
   return true;
 }
 
-void graphics_stop() { GrSetMode(GR_320_200_graphics); }
+void graphics_stop() {
+  GrSetContext(GrScreenContext());
+  GrDestroyContext(screen_buffer);
+  GrDestroyContext(sprite);
+  GrSetMode(GR_TEXT_DEFAULT);
+}
 
-void graphics_draw_rectangle(struct graphics_rect rect, GrColor color) {
-  GrFilledBox(rect.tl.x, rect.tl.y, rect.br.x, rect.br.y, color);
+void graphics_create_sprite() {
+  sprite = GrCreateContext(10, 10, NULL, NULL);
+  GrSetContext(sprite);
+  GrFilledBox(0, 0, 9, 9, RED);
+  GrFilledBox(0, 0, 9, 1, WHITE);
+  GrFilledBox(0, 8, 9, 9, WHITE);
+  GrSaveContext(sprite);
+  GrSetContext(GrScreenContext());
+}
+
+void graphics_draw_rectangle(struct graphics_rect rect) {
+  GrBitBlt(screen_buffer, rect.tl.x, rect.tl.y, sprite, 0, 0, 10, 10, GrWRITE);
+}
+
+void graphics_render_frame() {
+  GrBitBlt(GrScreenContext(), 0, 0, screen_buffer, 0, 0, SCREEN_WIDTH,
+           SCREEN_HEIGHT, GrWRITE);
 }
