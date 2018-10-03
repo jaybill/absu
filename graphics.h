@@ -4,26 +4,15 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-extern GrColor *egacolors;
-#define BLACK egacolors[0]
-#define BLUE egacolors[1]
-#define GREEN egacolors[2]
-#define CYAN egacolors[3]
-#define RED egacolors[4]
-#define MAGENTA egacolors[5]
-#define BROWN egacolors[6]
-#define LIGHTGRAY egacolors[7]
-#define DARKGRAY egacolors[8]
-#define LIGHTBLUE egacolors[9]
-#define LIGHTGREEN egacolors[10]
-#define LIGHTCYAN egacolors[11]
-#define LIGHTRED egacolors[12]
-#define LIGHTMAGENTA egacolors[13]
-#define YELLOW egacolors[14]
-#define WHITE egacolors[15]
+extern GrColor *aap64colors;
+#define AAP_BLACK aap64colors[0]
+#define AAP_BLUE aap64colors[17]
+#define AAP_LIGHTBLUE aap64colors[18]
+#define AAP_RED aap64colors[3]
+#define AAP_WHITE aap64colors[22]
 
-#define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 200
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 480
 
 struct graphics_point {
   int32_t x, y;
@@ -36,7 +25,9 @@ struct graphics_rect {
 bool graphics_start();
 void graphics_stop();
 void graphics_create_sprite();
-void graphics_draw_rectangle(struct graphics_rect rect);
+void graphics_draw_sprite(struct graphics_point point);
+void graphics_draw_background();
 void graphics_render_frame();
+GrColor *graphics_allocate_palette(void);
 
 #endif  // !MW_GRAPHICS_H

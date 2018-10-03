@@ -7,10 +7,10 @@
 #include "graphics.h"
 
 // Define Constants
-#define COLOR_BACKGROUND BLACK
-#define COLOR_PLAYER MAGENTA
-#define PLAYER_MOVEMENT_DISTANCE 10
-#define SQUARE_SIZE 10
+#define COLOR_BACKGROUND AAP_BLACK
+#define COLOR_PLAYER AAP_BLUE
+#define PLAYER_MOVEMENT_SPEED 2
+#define SQUARE_SIZE 16
 #define TARGET_FPS 60
 #define MAX_FRAMESKIP 5
 
@@ -18,29 +18,47 @@ int renders = 0;
 int updates = 0;
 static bool exit_now = false;
 
+struct movement {
+  double x_direction, y_direction, speed;
+};
+
 struct player {
-  int32_t x, y, dx, dy;
-  struct graphics_rect rect;
-  bool clear;
+  struct graphics_point location;
+  struct movement movement;
 };
 
 struct player player;
 
-static void player_draw(double delta) {
-  // Set up new square
-  struct graphics_point rt2 = {player.x, player.y};
-  struct graphics_point bl2 = {player.x + SQUARE_SIZE, player.y + SQUARE_SIZE};
-  struct graphics_rect draw_rect = {rt2, bl2};
+static void process_input() {}
 
-  // Save this rectangle data so we can clear it later
-  player.rect = draw_rect;
+static void player_draw(float delta) {
+  // view_position = position + (speed * interpolation)
 
-  // Draw new square
-  graphics_draw_rectangle(draw_rect);
+  if (player.movement.x_direction > 0) {
+    float change = (float)PLAYER_MOVEMENT_SPEED * delta;
+    player.location.x = player.location.x + change;
+    printf("right - x: %f, change: %f delta: %f\n", player.location.x, change,
+           delta);
+  }
+  if (player.movement.x_direction < 0) {
+    player.location.x = player.location.x - (PLAYER_MOVEMENT_SPEED * delta);
+
+    printf("left - x: %f, change: %f delta: %f\n", player.location.x,
+           PLAYER_MOVEMENT_SPEED * delta, delta);
+  }
+  if (player.movement.y_direction > 0) {
+    player.location.y = player.location.y + (PLAYER_MOVEMENT_SPEED * delta);
+  }
+  if (player.movement.y_direction < 0) {
+    player.location.y = player.location.y - (PLAYER_MOVEMENT_SPEED * delta);
+  }
+  // Draw the sprite
+  graphics_draw_sprite(player.location);
   graphics_render_frame();
 }
 
-void render(double delta) {
+void render(float delta) {
+  graphics_draw_background();
   player_draw(delta);
   renders++;
 }
@@ -52,40 +70,26 @@ static void player_step() {
     if (key > 0) {
       switch (key) {
         case 'w':
-          player.dy = -PLAYER_MOVEMENT_DISTANCE;
+          player.movement.y_direction = -1;
           break;
         case 's':
-          player.dy = PLAYER_MOVEMENT_DISTANCE;
+          player.movement.y_direction = 1;
           break;
         case 'a':
-          player.dx = -PLAYER_MOVEMENT_DISTANCE;
+          player.movement.x_direction = -1;
           break;
         case 'd':
-          player.dx = PLAYER_MOVEMENT_DISTANCE;
+          player.movement.x_direction = 1;
           break;
         case 27:
           exit_now = true;
           break;
       }
     }
+  } else {
+    player.movement.x_direction = 0;
+    player.movement.y_direction = 0;
   }
-  // Update x and y position of player, clamping movement to within screen
-  if (player.x + player.dx > -1 &&
-      player.x + player.dx < SCREEN_WIDTH - SQUARE_SIZE) {
-    player.x = player.x + player.dx;
-  } else if ((player.dx + player.x) - SQUARE_SIZE > SCREEN_WIDTH) {
-    player.x = SCREEN_WIDTH - SQUARE_SIZE;
-  }
-
-  if (player.y + player.dy > -1 &&
-      player.y + player.dy < SCREEN_HEIGHT - SQUARE_SIZE) {
-    player.y = player.y + player.dy;
-  } else if ((player.dy + player.y) - SQUARE_SIZE > SCREEN_HEIGHT) {
-    player.y = SCREEN_HEIGHT - SQUARE_SIZE;
-  }
-
-  player.dy = 0;
-  player.dx = 0;
 }
 
 void update() {
@@ -98,8 +102,7 @@ int main() {
 
   if (!graphics_start()) {
     graphics_stop();
-
-    printf("\nERROR: Can't switch to VGA 320x200 8bpp\n");
+    printf("\nERROR: Could not switch to VGA 640x480 16bpp mode.\n");
     return 1;
   }
   graphics_create_sprite();
@@ -113,8 +116,8 @@ int main() {
   while (!exit_now) {
     loops = 0;
     while (uclock() > next_game_tick && loops < MAX_FRAMESKIP) {
+      process_input();
       update();
-
       next_game_tick += skip_ticks;
       loops++;
     }
