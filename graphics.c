@@ -130,5 +130,5 @@ void graphics_draw_sprite(struct graphics_point point) {
 
 void graphics_render_frame() {
   GrBitBlt(GrScreenContext(), 0, 0, screen_buffer, 0, 0, SCREEN_WIDTH,
-           SCREEN_HEIGHT, GrWRITE);
+            SCREEN_HEIGHT, GrWRITE);
 }

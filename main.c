@@ -9,13 +9,16 @@
 // Define Constants
 #define COLOR_BACKGROUND AAP_BLACK
 #define COLOR_PLAYER AAP_BLUE
-#define PLAYER_MOVEMENT_SPEED 2
+#define SPEED 10
 #define SQUARE_SIZE 16
-#define TARGET_FPS 60
+#define TARGET_FPS 120
 #define MAX_FRAMESKIP 5
+
 
 int renders = 0;
 int updates = 0;
+int x_max = SCREEN_WIDTH - SQUARE_SIZE;
+int y_max = SCREEN_HEIGHT - SQUARE_SIZE;
 static bool exit_now = false;
 
 struct movement {
@@ -31,35 +34,31 @@ struct player player;
 
 static void process_input() {}
 
-static void player_draw(float delta) {
+static void player_draw() {
   // view_position = position + (speed * interpolation)
 
-  if (player.movement.x_direction > 0) {
-    float change = (float)PLAYER_MOVEMENT_SPEED * delta;
-    player.location.x = player.location.x + change;
-    printf("right - x: %f, change: %f delta: %f\n", player.location.x, change,
-           delta);
-  }
-  if (player.movement.x_direction < 0) {
-    player.location.x = player.location.x - (PLAYER_MOVEMENT_SPEED * delta);
+  // if (player.movement.x_direction > 0) {
+  //   player.location.x = player.location.x + (PLAYER_MOVEMENT_SPEED * delta);
+  // }
+  // if (player.movement.x_direction < 0) {
+  //   player.location.x = player.location.x - (PLAYER_MOVEMENT_SPEED * delta);
+  // }
+  // if (player.movement.y_direction > 0) {
+  //   player.location.y = player.location.y + (PLAYER_MOVEMENT_SPEED * delta);
+  // }
+  // if (player.movement.y_direction < 0) {
+  //   player.location.y = player.location.y - (PLAYER_MOVEMENT_SPEED * delta);
+  // }
 
-    printf("left - x: %f, change: %f delta: %f\n", player.location.x,
-           PLAYER_MOVEMENT_SPEED * delta, delta);
-  }
-  if (player.movement.y_direction > 0) {
-    player.location.y = player.location.y + (PLAYER_MOVEMENT_SPEED * delta);
-  }
-  if (player.movement.y_direction < 0) {
-    player.location.y = player.location.y - (PLAYER_MOVEMENT_SPEED * delta);
-  }
   // Draw the sprite
+
   graphics_draw_sprite(player.location);
   graphics_render_frame();
 }
 
-void render(float delta) {
+void render() {
   graphics_draw_background();
-  player_draw(delta);
+  player_draw();
   renders++;
 }
 
@@ -70,16 +69,16 @@ static void player_step() {
     if (key > 0) {
       switch (key) {
         case 'w':
-          player.movement.y_direction = -1;
+          player.movement.y_direction = -SPEED;
           break;
         case 's':
-          player.movement.y_direction = 1;
+          player.movement.y_direction = SPEED;
           break;
         case 'a':
-          player.movement.x_direction = -1;
+          player.movement.x_direction = -SPEED;
           break;
         case 'd':
-          player.movement.x_direction = 1;
+          player.movement.x_direction = SPEED;
           break;
         case 27:
           exit_now = true;
@@ -89,6 +88,36 @@ static void player_step() {
   } else {
     player.movement.x_direction = 0;
     player.movement.y_direction = 0;
+  }
+
+  // move
+  player.location.x += player.movement.x_direction;
+  player.location.y += player.movement.y_direction;
+
+
+
+  // check for bouncing
+  if (player.location.x < 0) {
+    player.location.x = 0;
+    player.movement.x_direction =
+        -player.movement.x_direction;  // move in other direction
+  } else {
+    if (player.location.x > x_max) {
+      player.location.x = x_max;
+      player.movement.x_direction =
+          -player.movement.x_direction;  // move in other direction
+    }
+  }
+  if (player.location.y < 0) {
+    player.location.y = 0;
+    player.movement.y_direction =
+        -player.movement.y_direction;  // move in other direction
+  } else {
+    if (player.location.y > y_max) {
+      player.location.y = y_max;
+      player.movement.y_direction =
+          -player.movement.y_direction;  // move in other direction
+    }
   }
 }
 
@@ -108,23 +137,26 @@ int main() {
   graphics_create_sprite();
 
   int key = 0;
+  player.movement.x_direction = SPEED;
+  player.movement.y_direction = SPEED;
   int32_t skip_ticks = UCLOCKS_PER_SEC / TARGET_FPS;
   uclock_t next_game_tick = uclock();
   uclock_t start_time = next_game_tick;
   int loops;
   float interpolation;
+  uclock_t game_time = uclock();
   while (!exit_now) {
+    game_time = uclock();
     loops = 0;
-    while (uclock() > next_game_tick && loops < MAX_FRAMESKIP) {
+
+    while (game_time > next_game_tick && loops < MAX_FRAMESKIP) {
       process_input();
       update();
       next_game_tick += skip_ticks;
       loops++;
     }
 
-    interpolation =
-        (float)(uclock() + skip_ticks - next_game_tick) / (float)(skip_ticks);
-    render(interpolation);
+    render();
   }
 
   graphics_stop();
@@ -132,7 +164,7 @@ int main() {
   uclock_t total_time = end_time - start_time;
   float total_seconds = (float)total_time / (float)UCLOCKS_PER_SEC;
   float fps = (float)updates / total_seconds;
-  printf("Total time was %f seconds (%d ticks)\n", total_seconds, total_time);
+  printf("Total time was %f seconds (%lld ticks)\n", total_seconds, total_time);
   printf("Rendered %d times and updated %d times - update FPS: %f \n", renders,
          updates, fps);
 
