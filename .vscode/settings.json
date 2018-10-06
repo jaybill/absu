@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        ".clang-format": "yaml",
+        "SConstruct": "python",
+        "SCsub": "python",
+        "stdbool.h": "c"
+    }
+}

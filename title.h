@@ -26,24 +26,11 @@
 /// USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.
 ///
 
-/* main.c */
+/* title.h */
 
-#include <stdio.h>
-#include "title.h"
-#include "game.h"
-#include "graphics.h"
+#ifndef MW_TITLE_H
+#define MW_TITLE_H
 
-int main() {
-  // Try to start graphics mode
+void title();
 
-  if (!graphics_start()) {
-    graphics_stop();
-    printf("\nERROR: Could not switch to VGA 640x480 16bpp mode.\n");
-    return 1;
-  }
-  title();
-  game();
-  graphics_stop();
-
-  return 0;
-}
+#endif  // !MW_TITLE_H

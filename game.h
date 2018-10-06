@@ -26,24 +26,16 @@
 /// USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.
 ///
 
-/* main.c */
+/* game.h */
 
-#include <stdio.h>
-#include "title.h"
-#include "game.h"
-#include "graphics.h"
+#ifndef MW_GAME_H
+#define MW_GAME_H
 
-int main() {
-  // Try to start graphics mode
+static void process_input();
+static void player_draw();
+void render();
+static void player_step();
+void update();
+void game();
 
-  if (!graphics_start()) {
-    graphics_stop();
-    printf("\nERROR: Could not switch to VGA 640x480 16bpp mode.\n");
-    return 1;
-  }
-  title();
-  game();
-  graphics_stop();
-
-  return 0;
-}
+#endif  // !MW_GAME_H

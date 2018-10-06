@@ -26,24 +26,21 @@
 /// USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.
 ///
 
-/* main.c */
+/* title.c */
 
-#include <stdio.h>
 #include "title.h"
-#include "game.h"
+
+#include <mgrxkeys.h>
+#include <string.h>
+
 #include "graphics.h"
 
-int main() {
-  // Try to start graphics mode
-
-  if (!graphics_start()) {
-    graphics_stop();
-    printf("\nERROR: Could not switch to VGA 640x480 16bpp mode.\n");
-    return 1;
-  }
-  title();
-  game();
-  graphics_stop();
-
-  return 0;
+void title() {
+  GrEvent ev;
+  GrEventInit();
+  graphics_create_sprite();
+  graphics_draw_title();
+  graphics_render_frame();
+  GrEventWaitKeyOrClick(&ev);
+  GrEventUnInit();
 }

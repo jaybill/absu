@@ -1,3 +1,33 @@
+///
+/// J. William McCarthy ("AUTHOR") CONFIDENTIAL
+/// Unpublished Copyright (c) 2017-2018 J. William McCarthy, All Rights
+/// Reserved.
+///
+/// NOTICE:  All information contained herein is, and remains the property of
+/// AUTHOR. The intellectual and technical concepts contained herein are
+/// proprietary to AUTHOR and may be covered by U.S. and Foreign Patents,
+/// patents in process, and are protected by trade secret or copyright law.
+/// Dissemination of this information or reproduction of this material is
+/// strictly forbidden unless prior written permission is obtained from AUTHOR.
+/// Access to the source code contained herein is hereby forbidden to anyone
+/// except current AUTHOR employees, managers or contractors who have executed
+/// Confidentiality and Non-disclosure agreements explicitly covering such
+/// access.
+///
+/// The copyright notice above does not evidence any actual or intended
+/// publication or disclosure  of  this source code, which includes information
+/// that is confidential and/or proprietary, and is a trade secret, of  AUTHOR.
+/// ANY REPRODUCTION, MODIFICATION, DISTRIBUTION, PUBLIC  PERFORMANCE, OR PUBLIC
+/// DISPLAY OF OR THROUGH USE  OF THIS  SOURCE CODE  WITHOUT  THE EXPRESS
+/// WRITTEN CONSENT OF AUTHOR IS STRICTLY PROHIBITED, AND IN VIOLATION OF
+/// APPLICABLE LAWS AND INTERNATIONAL TREATIES.  THE RECEIPT OR POSSESSION OF
+/// THIS SOURCE CODE AND/OR RELATED INFORMATION DOES NOT CONVEY OR IMPLY ANY
+/// RIGHTS TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE,
+/// USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.
+///
+
+/* graphics.c */
+
 #include "graphics.h"
 #include <stddef.h>
 #include <stdio.h>
@@ -5,6 +35,7 @@
 GrContext *sprite;
 GrContext *screen_buffer;
 GrContext *bg;
+GrContext *title;
 GrColor *aap64colors;
 
 static struct {
@@ -116,11 +147,40 @@ void graphics_create_sprite() {
   GrSetContext(bg);
   GrFilledBox(0, 0, bg->gc_xmax, bg->gc_ymax, AAP_BLUE);
   GrSaveContext(bg);
+
+  title = GrCreateContext(SCREEN_WIDTH, SCREEN_HEIGHT, NULL, NULL);
+  GrSetContext(title);
+  GrFilledBox(0, 0, title->gc_xmax, title->gc_ymax, AAP_BLUE);
+  char *message = "Molewarp";
+  int x, y;
+  GrTextOption grt;
+  grt.txo_font = GrGetDefaultFont();
+  grt.txo_fgcolor = AAP_WHITE;
+  grt.txo_bgcolor = AAP_BLACK;
+  grt.txo_direct = GR_TEXT_RIGHT;
+  grt.txo_xalign = GR_ALIGN_CENTER;
+  grt.txo_yalign = GR_ALIGN_CENTER;
+  grt.txo_chrtype = GR_BYTE_TEXT;
+
+  GrBox(0, 0, GrMaxX(), GrMaxY(), AAP_WHITE);
+  GrBox(4, 4, GrMaxX() - 4, GrMaxY() - 4, AAP_WHITE);
+
+  x = GrMaxX() / 2;
+  y = GrMaxY() / 2;
+
+  GrDrawString(message, strlen(message), x, y, &grt);
+
+  GrSaveContext(title);
+
   GrSetContext(GrScreenContext());
 }
 
 void graphics_draw_background() {
   GrBitBlt(screen_buffer, 0, 0, bg, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GrWRITE);
+}
+
+void graphics_draw_title() {
+  GrBitBlt(screen_buffer, 0, 0, title, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GrWRITE);
 }
 
 void graphics_draw_sprite(struct graphics_point point) {
@@ -130,5 +190,5 @@ void graphics_draw_sprite(struct graphics_point point) {
 
 void graphics_render_frame() {
   GrBitBlt(GrScreenContext(), 0, 0, screen_buffer, 0, 0, SCREEN_WIDTH,
-            SCREEN_HEIGHT, GrWRITE);
+           SCREEN_HEIGHT, GrWRITE);
 }
