@@ -31,6 +31,8 @@
 
 #include <dpmi.h>
 #include <go32.h>
+#include <stdint.h>
+
 #include <stdio.h>
 #include <string.h>
 #include <sys/farptr.h>
@@ -89,13 +91,38 @@ typedef struct MODE_INFO {
 } MODE_INFO;
 
 VESA_INFO vesa_info;
-
 MODE_INFO mode_info;
+
+uint8_t* vid_mem;
+uint8_t* back_buffer;
+
+unsigned short scr_w, scr_h;
+unsigned char bpp, pixel_stride;
+int pitch;
+
+void video_init(unsigned short screen_width, unsigned short screen_height,
+                unsigned char bits_per_pixel) {
+  /* Convert bits per pixel into bytes per pixel. Take care of 15-bit modes as
+   * well */
+  pixel_stride = (bits_per_pixel | 7) >> 3;
+  /* The pitch is the amount of bytes between the start of each row. This isn't
+   * always bytes * width. */
+  /* This should work for the basic 16 and 32 bpp modes (but not 24) */
+  pitch = screen_width * pixel_stride;
+
+  vid_mem = ((char*)0xA0000);
+  back_buffer = ((char*)(malloc(screen_height * pitch)));
+
+  scr_w = screen_width;
+  scr_h = screen_height;
+  bpp = bits_per_pixel;
+
+  int err = video_set_vesa_mode(screen_width, screen_height);
+}
 
 int video_set_mode(int mode) {
   memset(&regs, 0, sizeof regs);
   regs.x.ax = mode;
-
   return __dpmi_int(SET_MODE, &regs);
 }
 
