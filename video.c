@@ -100,7 +100,10 @@ unsigned short scr_w, scr_h;
 unsigned char bpp, pixel_stride;
 int pitch;
 
-void video_off() { video_set_mode(TEXT_MODE); }
+void video_off() {
+  free(back_buffer);
+  video_set_mode(TEXT_MODE);
+}
 
 int video_init(unsigned short screen_width, unsigned short screen_height) {
   scr_w = screen_width;
@@ -147,6 +150,12 @@ void video_put_pixel(int x, int y, int color) {
   video_set_vesa_bank(bank_number);
 
   _farpokeb(_dos_ds, VIDEO_MEMORY_START + bank_offset, color);
+}
+
+void video_put_pixelb(int x, int y, int color) {
+  int offset = x * pixel_stride + y * pitch;
+  
+  back_buffer[(offset & 0xFFFF)] = color;
 }
 
 int video_get_vesa_info() {
@@ -276,4 +285,39 @@ int video_set_vesa_mode(int w, int h) {
 
   /* it worked! */
   return 0;
+}
+
+void video_update_screen() {
+  int bank_size = mode_info.WinSize * 1024;
+  int bank_granularity = mode_info.WinGranularity * 1024;
+  int bank_number = 0;
+  int todo = scr_h * scr_h;
+  int copy_size;
+
+  while (todo > 0) {
+    /* select the appropriate bank */
+    video_set_vesa_bank(bank_number);
+
+    /* how much can we copy in one go? */
+    if (todo > bank_size)
+      copy_size = bank_size;
+    else
+      copy_size = todo;
+
+    /* copy a bank of data to the screen */
+    dosmemput(back_buffer, copy_size, VIDEO_MEMORY_START);
+
+    /* move on to the next bank of data */
+    todo -= copy_size;
+    back_buffer += copy_size;
+    bank_number += bank_size / bank_granularity;
+  }
+}
+
+void video_set_palette_register(unsigned char index, rgb_color* color) {
+  outportb(0x3c6, 0xff);
+  outportb(0x3c8, index);
+  outportb(0x3c9, color->red);
+  outportb(0x3c9, color->green);
+  outportb(0x3c9, color->blue);
 }

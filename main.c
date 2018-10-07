@@ -45,14 +45,18 @@ int main() {
     exit_now = true;
   }
 
+  rgb_color col = {0, 63, 0};  // green
+  video_set_palette_register(1, &col);
+
   for (size_t i = 0; i < 100; i++) {
-    video_put_pixel(i, i, 1);
+    video_put_pixelb(i, i, 1);
   }
 
   while (!exit_now) {
     if (kbhit()) {
       exit_now = true;
     }
+    video_update_screen();
   }
   video_off();
 
