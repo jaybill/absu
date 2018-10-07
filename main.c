@@ -28,22 +28,31 @@
 
 /* main.c */
 
+#include <conio.h>
+#include <stdbool.h>
 #include <stdio.h>
-#include "title.h"
-#include "game.h"
-#include "graphics.h"
+#include "video.h"
+
+bool exit_now = false;
 
 int main() {
   // Try to start graphics mode
-
-  if (!graphics_start()) {
-    graphics_stop();
-    printf("\nERROR: Could not switch to VGA 640x480 16bpp mode.\n");
-    return 1;
+  if (video_set_vesa_mode(640,480) == -1) {
+    video_set_mode(TEXT_MODE);
+    printf("Could not switch to VGA mode.");
+    exit_now = true;
   }
-  title();
-  game();
-  graphics_stop();
+
+  for (size_t i = 0; i < 10; i++) {
+    video_putpixel_vesa_640x480(i, i, 1);
+  }
+
+  while (!exit_now) {
+    if (kbhit()) {
+      exit_now = true;
+    }
+  }
+  video_set_mode(TEXT_MODE);
 
   return 0;
 }

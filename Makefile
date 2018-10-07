@@ -8,12 +8,7 @@ all: molewarp.exe
 molewarp.exe: main.c
 	redir -o gcc.log -eo $(CC) $(FLAGS) -o molewarp.exe \
 	main.c \
-	game.c \
-	graphics.c \
-	title.c \
-	-lmgrx \
-	-lpng \
-	-lz 
+	video.c
 
 clean:
 	del *.exe
