@@ -34,26 +34,17 @@
 #include <stdbool.h>
 
 #define SET_MODE 0x10  /* BIOS func to set the video mode. */
-#define VGA_HIGH 0x12  /* use to set 640x680 256-color mode. */
-#define VGA_LOW 0x13   /* use to set 320x200 256-color mode. */
 #define TEXT_MODE 0x03 /* use to set 80x25 text mode. */
-
-#define SCREEN_WIDTH_HI 640  /* width in pixels of mode 0x12 */
-#define SCREEN_HEIGHT_HI 480 /* height in pixels of mode 0x12 */
-#define SCREEN_WIDTH_LO 320  /* width in pixels of mode 0x12 */
-#define SCREEN_HEIGHT_LO 200 /* height in pixels of mode 0x12 */
-
 #define VIDEO_MEMORY_START 0xa0000
 
-#define NUM_COLORS 256 /* number of colors in mode 0x12 and 0x13 */
-
 int video_set_mode(int mode);
-void video_draw_pixel(int x, int y, int c);
+void video_put_pixel(int x, int y, int c);
 int video_get_vesa_info();
 int video_get_mode_info(int mode);
 int video_find_vesa_mode(int w, int h);
 int video_set_vesa_mode(int w, int h);
-void video_putpixel_vesa_640x480(int x, int y, int color);
 void video_set_vesa_bank(int bank_number);
+int video_init(unsigned short screen_width, unsigned short screen_height);
+void video_off();
 
 #endif  // !MW_VIDEO_H

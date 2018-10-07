@@ -26,35 +26,12 @@
 /// USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.
 ///
 
-/* main.c */
+/* main.h */
 
-#include "main.h"
+#ifndef MW_MAIN_H
+#define MW_MAIN_H
 
-#include <conio.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include "video.h"
+#define SCREEN_WIDTH 320
+#define SCREEN_HEIGHT 240
 
-bool exit_now = false;
-
-int main() {
-  // Try to start graphics mode
-  if (video_init(SCREEN_WIDTH, SCREEN_HEIGHT) == -1) {
-    video_off();
-    printf("Could not switch to VGA mode.");
-    exit_now = true;
-  }
-
-  for (size_t i = 0; i < 100; i++) {
-    video_put_pixel(i, i, 1);
-  }
-
-  while (!exit_now) {
-    if (kbhit()) {
-      exit_now = true;
-    }
-  }
-  video_off();
-
-  return 0;
-}
+#endif  // !MW_MAIN_H

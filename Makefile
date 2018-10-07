@@ -1,7 +1,7 @@
 # Makefile for DJGPP 2.0
 
 CC = gcc
-FLAGS = -Wall -Os
+FLAGS = -w -Os
 
 all: molewarp.exe
 

@@ -100,24 +100,29 @@ unsigned short scr_w, scr_h;
 unsigned char bpp, pixel_stride;
 int pitch;
 
-void video_init(unsigned short screen_width, unsigned short screen_height,
-                unsigned char bits_per_pixel) {
+void video_off() { video_set_mode(TEXT_MODE); }
+
+int video_init(unsigned short screen_width, unsigned short screen_height) {
+  scr_w = screen_width;
+  scr_h = screen_height;
+
+  int err = video_set_vesa_mode(screen_width, screen_height);
+  if (err == -1) {
+    return -1;
+  }
+  bpp = mode_info.BitsPerPixel;
   /* Convert bits per pixel into bytes per pixel. Take care of 15-bit modes as
    * well */
-  pixel_stride = (bits_per_pixel | 7) >> 3;
+
+  pixel_stride = (bpp | 7) >> 3;
   /* The pitch is the amount of bytes between the start of each row. This isn't
    * always bytes * width. */
   /* This should work for the basic 16 and 32 bpp modes (but not 24) */
   pitch = screen_width * pixel_stride;
 
-  vid_mem = ((char*)0xA0000);
+  vid_mem = ((char*)VIDEO_MEMORY_START);
   back_buffer = ((char*)(malloc(screen_height * pitch)));
-
-  scr_w = screen_width;
-  scr_h = screen_height;
-  bpp = bits_per_pixel;
-
-  int err = video_set_vesa_mode(screen_width, screen_height);
+  return 0;
 }
 
 int video_set_mode(int mode) {
@@ -133,15 +138,15 @@ void video_set_vesa_bank(int bank_number) {
   __dpmi_int(0x10, &regs);
 }
 
-void video_putpixel_vesa_640x480(int x, int y, int color) {
-  int address = y * 640 + x;
+void video_put_pixel(int x, int y, int color) {
+  int address = y * scr_w + x;
   int bank_size = mode_info.WinGranularity * 1024;
   int bank_number = address / bank_size;
   int bank_offset = address % bank_size;
 
   video_set_vesa_bank(bank_number);
 
-  _farpokeb(_dos_ds, 0xA0000 + bank_offset, color);
+  _farpokeb(_dos_ds, VIDEO_MEMORY_START + bank_offset, color);
 }
 
 int video_get_vesa_info() {
