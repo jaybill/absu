@@ -31,7 +31,4 @@
 #ifndef MW_MAIN_H
 #define MW_MAIN_H
 
-#define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 240
-
 #endif  // !MW_MAIN_H

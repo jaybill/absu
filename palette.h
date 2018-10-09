@@ -26,38 +26,9 @@
 /// USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.
 ///
 
-/* main.c */
+/* palette.h */
 
-#include "main.h"
+#ifndef MW_PALETTE_H
+#define MW_PALETTE_H
 
-#include <conio.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include "video.h"
-
-bool exit_now = false;
-
-int main() {
-  // Try to start graphics mode
-  if (video_init(320, 200) == -1) {
-    video_off();
-    printf("Could not switch to VGA mode.");
-    exit_now = true;
-  }
-
-  rgb_color col = {0, 63, 0};  // green
-  video_set_palette_register(1, &col);
-
-  while (!exit_now) {
-    for (size_t i = 0; i < 100; i++) {
-      video_put_pixel(i, i, 1);
-    }
-    if (kbhit()) {
-      exit_now = true;
-    }
-    video_update_screen();
-  }
-  video_off();
-
-  return 0;
-}
+#endif  // !MW_PALETTE_H
