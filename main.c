@@ -39,7 +39,7 @@ bool exit_now = false;
 
 int main() {
   // Try to start graphics mode
-  if (video_init(320, 200) == -1) {
+  if (video_init(SCREEN_WIDTH, SCREEN_HEIGHT) == -1) {
     video_off();
     printf("Could not switch to VGA mode.");
     exit_now = true;
@@ -48,10 +48,11 @@ int main() {
   rgb_color col = {0, 63, 0};  // green
   video_set_palette_register(1, &col);
 
+  for (size_t i = 0; i < 100; i++) {
+    video_put_pixelb(i, i, 1);
+  }
+
   while (!exit_now) {
-    for (size_t i = 0; i < 100; i++) {
-      video_put_pixel(i, i, 1);
-    }
     if (kbhit()) {
       exit_now = true;
     }
