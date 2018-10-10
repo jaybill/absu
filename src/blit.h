@@ -1,4 +1,3 @@
-
 ///
 /// J. William McCarthy ("AUTHOR") CONFIDENTIAL
 /// Unpublished Copyright (c) 2017-2018 J. William McCarthy, All Rights
@@ -27,44 +26,13 @@
 /// USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.
 ///
 
-/* main.c */
+/* blit.h */
 
-#include "main.h"
-#include "draw.h"
+#ifndef MW_BLIT_H
+#define MW_BLIT_H
+
 #include "video.h"
 
-void main(void) {
-  SCREEN *screen = video_open();
 
-  draw_pixel(screen, 1, 1, 15);
-  draw_pixel(screen, 2, 1, 15);
-  draw_hline(screen, 30, 1);
-  draw_vline(screen, 100, 12);
 
-  video_update_screen(screen);
-
-  delay(3000);
-
-  video_clear_buffer(screen);
-  video_update_screen(screen);
-  
-  delay(3000);
-
-  draw_pixel(screen, 1, 1, 15);
-  draw_pixel(screen, 2, 1, 15);
-  draw_hline(screen, 30, 1);
-  draw_vline(screen, 100, 12);
-
-  video_update_screen(screen);
-
-  delay(3000);
-
-  video_clear_screen();
-
-  delay(1000);
-
-  video_update_screen(screen);
-
-  getkey();
-  video_close(screen);
-}
+#endif  // !MW_BLIT_H
