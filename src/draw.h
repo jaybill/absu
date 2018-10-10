@@ -36,5 +36,6 @@
 void draw_hline(SCREEN *screen, int y, int color);
 void draw_pixel(SCREEN *screen, int x, int y, int color);
 void draw_vline(SCREEN *screen, int x, int color);
+void video_clear_screen();
 
 #endif  // !MW_DRAW_H

@@ -40,8 +40,8 @@ typedef struct screens {
 
 SCREEN *video_open();
 void video_close(SCREEN *screen);
-
 void video_update_screen(SCREEN *screen);
 void video_set_palette(int entry, int r, int g, int b);
+void video_clear_buffer(SCREEN *screen);
 
 #endif  // !MW_VIDEO_H

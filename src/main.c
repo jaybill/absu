@@ -43,6 +43,24 @@ void main(void) {
 
   video_update_screen(screen);
 
+  delay(3000);
+
+  video_clear_buffer(screen);
+  video_update_screen(screen);
+  
+  delay(3000);
+
+  draw_pixel(screen, 1, 1, 15);
+  draw_pixel(screen, 2, 1, 15);
+  draw_hline(screen, 30, 1);
+  draw_vline(screen, 100, 12);
+
+  video_update_screen(screen);
+
+  delay(3000);
+
+  video_clear_screen();
+
   getkey();
   video_close(screen);
 }

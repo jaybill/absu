@@ -105,7 +105,6 @@ SCREEN *video_open() {
   }
   ADDR = info.address; /* Updated by above call */
   printf("Vesa mode 0x101: %d x %d, linear frame: 0x%x\n", width, height, ADDR);
-  
 
   reg.x.ax = 0x4f02;
   reg.x.bx = 0x4101;      /* mode plus linear enable bit */
@@ -114,7 +113,7 @@ SCREEN *video_open() {
     printf("Mode set failed!\n");
     exit(3);
   }
-  
+
   video = (char *)(ADDR + __djgpp_conventional_base);
   bufsize = width * height * sizeof(BYTE);
 
@@ -133,6 +132,14 @@ void video_close(SCREEN *screen) {
   __dpmi_int(0x10, &reg);
   free(screen->buffer);
   free(screen);
+}
+
+void video_clear_buffer(SCREEN *screen) {
+  bzero(screen->buffer,screen->bufsize);
+}
+
+void video_clear_screen(){
+  bzero(video,bufsize);
 }
 
 void video_update_screen(SCREEN *screen) {
