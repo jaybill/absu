@@ -31,27 +31,17 @@
 #ifndef MW_VIDEO_H
 #define MW_VIDEO_H
 
-#define SET_MODE 0x10  /* BIOS func to set the video mode. */
-#define TEXT_MODE 0x03 /* use to set 80x25 text mode. */
-#define VIDEO_MEMORY_START 0xa0000
+#define BYTE unsigned char
 
-typedef struct rgb_color_type {
-  unsigned char red;
-  unsigned char green;
-  unsigned char blue;
-} rgb_color;
+typedef struct screens {
+  int width, height, bpp, bufsize;
+  char *buffer;
+} SCREEN;
 
-int video_set_mode(int mode);
-void video_put_pixel(int x, int y, int c);
-void video_put_pixelb(int x, int y, int color);
-int video_get_vesa_info();
-int video_get_mode_info(int mode);
-int video_find_vesa_mode(int w, int h);
-int video_set_vesa_mode(int w, int h);
-void video_set_vesa_bank(int bank_number);
-int video_init(unsigned short screen_width, unsigned short screen_height);
-void video_set_palette_register(unsigned char index, rgb_color *color);
-void video_update_screen();
-void video_off();
+SCREEN *video_open();
+void video_close(SCREEN *screen);
+
+void video_update_screen(SCREEN *screen);
+void video_set_palette(int entry, int r, int g, int b);
 
 #endif  // !MW_VIDEO_H

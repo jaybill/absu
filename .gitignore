@@ -3,3 +3,5 @@ compile.txt
 *.exe
 std???.txt
 *.log
+*.o
+dist

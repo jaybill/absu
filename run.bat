@@ -1,1 +1,0 @@
-dosbox.exe -noconsole -userconf -conf dosbox-slow.conf "F:" "echo ----------------------- >> out.txt" -c "time >> out.txt" -c "molewarp.exe >> out.txt"  -c "pause" -c "exit" 

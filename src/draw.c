@@ -26,39 +26,23 @@
 /// USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.
 ///
 
-/* main.c */
+/* draw.c */
 
-#include "main.h"
+#include "draw.h"
+#include <stddef.h>
 
-#include <conio.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include "video.h"
+void draw_pixel(SCREEN *screen, int x, int y, int color) {
+  screen->buffer[x + screen->width * y] = color;
+}
 
-bool exit_now = false;
-
-int main() {
-  // Try to start graphics mode
-  if (video_init(SCREEN_WIDTH, SCREEN_HEIGHT) == -1) {
-    video_off();
-    printf("Could not switch to VGA mode.");
-    exit_now = true;
+void draw_hline(SCREEN *screen, int y, int color) {
+  for (size_t i = 0; i < screen->width; i++) {
+    draw_pixel(screen, i, y, color);
   }
+}
 
-  rgb_color col = {0, 63, 0};  // green
-  video_set_palette_register(1, &col);
-
-  for (size_t i = 0; i < 100; i++) {
-    video_put_pixelb(i, i, 1);
+void draw_vline(SCREEN *screen, int x, int color) {
+  for (size_t i = 0; i < screen->height; i++) {
+    draw_pixel(screen, x, i, color);
   }
-
-  while (!exit_now) {
-    if (kbhit()) {
-      exit_now = true;
-    }
-    video_update_screen();
-  }
-  video_off();
-
-  return 0;
 }

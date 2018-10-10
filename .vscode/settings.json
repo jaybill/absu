@@ -4,5 +4,7 @@
         "SConstruct": "python",
         "SCsub": "python",
         "stdbool.h": "c"
-    }
+    },
+    "terminal.integrated.shell.windows": "C:\\MinGW\\msys\\1.0\\bin\\bash.exe",
+    "terminal.integrated.shellArgs.windows": ["--login", "-i"]
 }
