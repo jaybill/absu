@@ -21,19 +21,19 @@ There's no reason you couldn't just create a `deps/absu` folder in your project,
 ### Building as a static library
 1. Clone this repo somewhere:
 
-    git clone git@github.com:jaybill/absu.git
+    `git clone git@github.com:jaybill/absu.git`
 
 1. Change into the directory:
 
-    cd absu
+    `cd absu`
 
 1. To build the library and the test program:
 
-    make
+    `make`
 
 1. To build just the library:
 
-    make lib
+    `make lib`
 
 1. Assuming that all worked, you can now use the library and the include files in your own project. 
 
