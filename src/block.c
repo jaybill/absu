@@ -49,17 +49,10 @@ void block_destroy(BLOCK *block) {
 
 void block_copy_to_screen(SCREEN *screen, BLOCK *block, int x, int y) {
   int drawn_pixels = 0;
-  // loop through lines of block
+  // loop through lines of block - copy entire line
   for (size_t i = 0; i < block->height; i++) {
-    // loop through columns of block
-    for (size_t j = 0; j < block->width; j++) {
-      printf(
-          "Block x: %d, Block y: %d, Screen x: %d, Screen y: %d, Color: %d\n",
-          j, i, x, y, block->buffer[j + (block->width * i)]);
-      screen->buffer[x + j + (screen->width * (y + i))] =
-          block->buffer[j + (block->width * i)];
-      drawn_pixels++;
-    }
+    memcpy(&screen->buffer[x + (screen->width * (y + i))],
+           &block->buffer[i * block->width],
+           sizeof(block->buffer[0]) * block->width);
   }
-  printf("Drew %d pixels.\n", drawn_pixels);
 }

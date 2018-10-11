@@ -37,14 +37,14 @@
 void main(void) {
   SCREEN *screen = video_open();
 
-  BLOCK *square1 = block_create(20, 20);
+  BLOCK *square1 = block_create(20, 8);
 
   draw_hline(square1, 0, 52);
-  draw_hline(square1, 19, 52);
+  draw_hline(square1, 7, 52);
   draw_vline(square1, 0, 52);
   draw_vline(square1, 19, 52);
 
-  block_copy_to_screen(screen, square1, -5, 200);
+  block_copy_to_screen(screen, square1, 10, 10);
 
   video_update_screen(screen);
 
