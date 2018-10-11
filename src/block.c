@@ -2,7 +2,7 @@
 /// J. William McCarthy ("AUTHOR") CONFIDENTIAL
 /// Unpublished Copyright (c) 2017-2018 J. William McCarthy, All Rights
 /// Reserved.
-/// Copyright (C) 2018, John William McCarthy 
+/// Copyright (C) 2018, Jaybill McCarthy 
 /// 
 /// Permission is hereby granted, free of charge, to any person obtaining a 
 /// copy of this software and associated documentation files (the "Software"), 
