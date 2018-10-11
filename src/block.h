@@ -31,4 +31,15 @@
 #ifndef MW_BLOCK_H
 #define MW_BLOCK_H
 
+#include "video.h"
+
+typedef struct blocks {
+  int width, height, bufsize;
+  char *buffer;
+} BLOCK;
+
+BLOCK *block_create(int width, int height);
+void block_destroy(BLOCK *block);
+void block_copy_to_screen(SCREEN *screen, BLOCK *block, int x, int y);
+
 #endif  // !MW_BLOCK_H

@@ -31,18 +31,18 @@
 #include "draw.h"
 #include <stddef.h>
 
-void draw_pixel(SCREEN *screen, int x, int y, int color) {
-  screen->buffer[x + screen->width * y] = color;
+void draw_pixel(BLOCK *block, int x, int y, int color) {
+  block->buffer[x + (block->width * y)] = color;
 }
 
-void draw_hline(SCREEN *screen, int y, int color) {
-  for (size_t i = 0; i < screen->width; i++) {
-    draw_pixel(screen, i, y, color);
+void draw_hline(BLOCK *block, int y, int color) {
+  for (size_t i = 0; i < block->width; i++) {
+    draw_pixel(block, i, y, color);
   }
 }
 
-void draw_vline(SCREEN *screen, int x, int color) {
-  for (size_t i = 0; i < screen->height; i++) {
-    draw_pixel(screen, x, i, color);
+void draw_vline(BLOCK *block, int x, int color) {
+  for (size_t i = 0; i < block->height; i++) {
+    draw_pixel(block, x, i, color);
   }
 }

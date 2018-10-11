@@ -30,38 +30,21 @@
 /* main.c */
 
 #include "main.h"
+#include "block.h"
 #include "draw.h"
 #include "video.h"
 
 void main(void) {
   SCREEN *screen = video_open();
 
-  draw_pixel(screen, 1, 1, 15);
-  draw_pixel(screen, 2, 1, 15);
-  draw_hline(screen, 30, 1);
-  draw_vline(screen, 100, 12);
+  BLOCK *square1 = block_create(20, 20);
 
-  video_update_screen(screen);
+  draw_hline(square1, 0, 52);
+  draw_hline(square1, 19, 52);
+  draw_vline(square1, 0, 52);
+  draw_vline(square1, 19, 52);
 
-  delay(3000);
-
-  video_clear_buffer(screen);
-  video_update_screen(screen);
-  
-  delay(3000);
-
-  draw_pixel(screen, 1, 1, 15);
-  draw_pixel(screen, 2, 1, 15);
-  draw_hline(screen, 30, 1);
-  draw_vline(screen, 100, 12);
-
-  video_update_screen(screen);
-
-  delay(3000);
-
-  video_clear_screen();
-
-  delay(1000);
+  block_copy_to_screen(screen, square1, -5, 200);
 
   video_update_screen(screen);
 

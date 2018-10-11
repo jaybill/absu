@@ -29,3 +29,37 @@
 /* block.c */
 
 #include "block.h"
+#include <stddef.h>
+#include <stdio.h>
+
+BLOCK *block_create(int width, int height) {
+  BLOCK *block = (SCREEN *)malloc(sizeof(BLOCK));
+  block->bufsize = width * height * sizeof(BYTE);
+  block->buffer = (char *)malloc(block->bufsize);
+  bzero(block->buffer, block->bufsize);
+  block->width = width;
+  block->height = height;
+  return block;
+}
+
+void block_destroy(BLOCK *block) {
+  free(block->buffer);
+  free(block);
+}
+
+void block_copy_to_screen(SCREEN *screen, BLOCK *block, int x, int y) {
+  int drawn_pixels = 0;
+  // loop through lines of block
+  for (size_t i = 0; i < block->height; i++) {
+    // loop through columns of block
+    for (size_t j = 0; j < block->width; j++) {
+      printf(
+          "Block x: %d, Block y: %d, Screen x: %d, Screen y: %d, Color: %d\n",
+          j, i, x, y, block->buffer[j + (block->width * i)]);
+      screen->buffer[x + j + (screen->width * (y + i))] =
+          block->buffer[j + (block->width * i)];
+      drawn_pixels++;
+    }
+  }
+  printf("Drew %d pixels.\n", drawn_pixels);
+}

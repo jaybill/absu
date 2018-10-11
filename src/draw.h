@@ -31,11 +31,11 @@
 #ifndef MW_DRAW_H
 #define MW_DRAW_H
 
-#include "video.h"
+#include "block.h"
 
-void draw_hline(SCREEN *screen, int y, int color);
-void draw_pixel(SCREEN *screen, int x, int y, int color);
-void draw_vline(SCREEN *screen, int x, int color);
-void video_clear_screen();
+void draw_hline(BLOCK *block, int y, int color);
+void draw_pixel(BLOCK *block, int x, int y, int color);
+void draw_vline(BLOCK *block, int x, int color);
+void video_clear_block();
 
 #endif  // !MW_DRAW_H
