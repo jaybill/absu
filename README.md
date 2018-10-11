@@ -1,7 +1,7 @@
 # ABSU Game Library
 
 ## What?
-ABSU is a library for writing games in C (or assembly language) that run on [DOSBox](https://dosbox.com) or Intel 80386 (or later) and 100% compatible based PCs running DOS (either [FreeDOS](http://www.freedos.org/) or [MS DOS](https://en.wikipedia.org/wiki/MS-DOS) ). It aims to provide graphics, sprites, input (keyboard/mouse/gamepad) handling, sound and a bunch of useful utilities. The library and programs that use it can be currently only be compiled with [DJGPP](http://www.delorie.com/djgpp/), but [OpenWatcom](http://openwatcom.org/) will eventually be supported as well. It has no dependencies.
+ABSU is a library for writing games in C (or assembly language) that run on [DOSBox](https://dosbox.com) or Intel 80386 (or later) and 100% compatible based PCs running DOS (either [FreeDOS](http://www.freedos.org/) or [MS DOS](https://en.wikipedia.org/wiki/MS-DOS) ). It aims to provide graphics, sprites, input (keyboard/mouse/gamepad) handling, sound and a bunch of useful utilities. The library and programs that use it can currently only be compiled with [DJGPP](http://www.delorie.com/djgpp/), but [OpenWatcom](http://openwatcom.org/) will eventually be supported as well. It has no dependencies.
 
 ## Installation
 The following instructions assume you're doing your development on a modern (as of 2018) computer running a recent version of Windows, OSX or Linux and essentially treating DOS as an embedded system. While I'm certain you could get the tools and all working _within a DOS environment_, you're on your own setting that up. If you do end up doing that and want to help with this project, feel free to write up directions and I'll include them in this package.
