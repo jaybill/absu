@@ -1,7 +1,3 @@
-///
-/// J. William McCarthy ("AUTHOR") CONFIDENTIAL
-/// Unpublished Copyright (c) 2017-2018 J. William McCarthy, All Rights
-/// Reserved.
 /// Copyright (C) 2018, John William McCarthy 
 /// 
 /// Permission is hereby granted, free of charge, to any person obtaining a 
@@ -23,33 +19,22 @@
 /// DEALINGS IN THE SOFTWARE. 
 /// 
 
-/* block.c */
+/* video.h */
 
-#include "../include/block.h"
-#include <stddef.h>
-#include <stdio.h>
+#ifndef ABSU_VIDEO_H
+#define ABSU_VIDEO_H
 
-BLOCK *block_create(int width, int height) {
-  BLOCK *block = (SCREEN *)malloc(sizeof(BLOCK));
-  block->bufsize = width * height * sizeof(BYTE);
-  block->buffer = (char *)malloc(block->bufsize);
-  bzero(block->buffer, block->bufsize);
-  block->width = width;
-  block->height = height;
-  return block;
-}
+#define BYTE unsigned char
 
-void block_destroy(BLOCK *block) {
-  free(block->buffer);
-  free(block);
-}
+typedef struct screens {
+  int width, height, bpp, bufsize;
+  char *buffer;
+} SCREEN;
 
-void block_copy_to_screen(SCREEN *screen, BLOCK *block, int x, int y) {
-  int drawn_pixels = 0;
-  // loop through lines of block - copy entire line
-  for (size_t i = 0; i < block->height; i++) {
-    memcpy(&screen->buffer[x + (screen->width * (y + i))],
-           &block->buffer[i * block->width],
-           sizeof(block->buffer[0]) * block->width);
-  }
-}
+SCREEN *video_open();
+void video_close(SCREEN *screen);
+void video_update_screen(SCREEN *screen);
+void video_set_palette(int entry, int r, int g, int b);
+void video_clear_buffer(SCREEN *screen);
+
+#endif  // !ABSU_VIDEO_H

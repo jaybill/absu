@@ -5,3 +5,5 @@ std???.txt
 *.log
 *.o
 dist
+bin
+lib

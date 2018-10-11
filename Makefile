@@ -1,18 +1,21 @@
 
-CC        = $(DJGPP_CC)
-VENDOR    = deps
-CFLAGS    = -DHAVE_STDBOOL_H=1 -w
-LDFLAGS   = 
+BIN       	= test
+SRCDIR    	= src
+BINDIR 		= bin
+LIB			= libabsu.a
+LIBDIR		= lib
+TESTDIR		= test
 
-BIN       = molewarp.exe
-SRCDIR    = src
-DISTDIR   = dist
+CC        	= $(DJGPP_CC)
+CFLAGS    	= -DHAVE_STDBOOL_H=1 -w 
+LDFLAGS   	= -L${LIBDIR} -labsu
+AR			= ar
 
 # All source files (*.c) and their corresponding object files.
 SRC       = $(shell find $(SRCDIR) -name "*.c" 2> /dev/null)
 OBJS      = $(SRC:%.c=%.o)
 
-.PHONY: clean dir
+.PHONY: clean dir lib
 default: all
 
 check_djgpp:
@@ -22,16 +25,24 @@ check_djgpp:
 	fi
 
 dir:
-	@mkdir -p ${DISTDIR}
+	@mkdir -p ${BINDIR}
+	@mkdir -p ${LIBDIR}
 
 %.o: %.c | check_djgpp
 	${CC} -c -o $@ $? ${CFLAGS}
 
-${DISTDIR}/${BIN}: ${OBJS} | check_djgpp
-	${CC} -o ${DISTDIR}/${BIN} $+ ${LDFLAGS}
+${BINDIR}/${BIN}.exe: | ${LIBDIR}/${LIB}
+	${CC} -c -w ${TESTDIR}/${BIN}.c -o ${TESTDIR}/${BIN}.o
+	${CC} ${TESTDIR}/test.o -o ${BINDIR}/${BIN}.exe ${LDFLAGS}
 
-all: dir ${DISTDIR}/${BIN}
+${LIBDIR}/${LIB}: ${OBJS}
+	${AR} rcs ${LIBDIR}/${LIB} $+
+
+lib: dir ${LIBDIR}/${LIB}
+
+all: dir ${LIBDIR}/${LIB} ${BINDIR}/${BIN}.exe
 
 clean:
-	rm -rf ${DISTDIR}/*
+	rm -rf ${LIBDIR}/*
+	rm -rf ${BINDIR}/*
 	rm -f ${OBJS}
