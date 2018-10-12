@@ -1,23 +1,23 @@
-/// Copyright (C) 2018, Jaybill McCarthy 
-/// 
-/// Permission is hereby granted, free of charge, to any person obtaining a 
-/// copy of this software and associated documentation files (the "Software"), 
-/// to deal in the Software without restriction, including without limitation 
-/// the rights to use, copy, modify, merge, publish, distribute, sublicense, 
-/// and/or sell copies of the Software, and to permit persons to whom the 
-/// Software is furnished to do so, subject to the following conditions: 
-/// 
-/// The above copyright notice and this permission notice shall be included in 
-/// all copies or substantial portions of the Software. 
-/// 
-/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL 
-/// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
-/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-/// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
-/// DEALINGS IN THE SOFTWARE. 
-/// 
+/// Copyright (C) 2018, Jaybill McCarthy
+///
+/// Permission is hereby granted, free of charge, to any person obtaining a
+/// copy of this software and associated documentation files (the "Software"),
+/// to deal in the Software without restriction, including without limitation
+/// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+/// and/or sell copies of the Software, and to permit persons to whom the
+/// Software is furnished to do so, subject to the following conditions:
+///
+/// The above copyright notice and this permission notice shall be included in
+/// all copies or substantial portions of the Software.
+///
+/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+/// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+/// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+/// DEALINGS IN THE SOFTWARE.
+///
 
 /* video.c */
 #include "../include/video.h"
@@ -31,6 +31,8 @@
 
 #include <crt0.h>
 #include <sys/nearptr.h>
+
+#define LINEAR_BIT 0x4000
 
 int _crt0_startup_flags = _CRT0_FLAG_NEARPTR | _CRT0_FLAG_NONMOVE_SBRK;
 
@@ -49,6 +51,7 @@ typedef struct {
 unsigned int ADDR;
 int width, height, bufsize;
 char *video;
+__dpmi_meminfo info;
 
 ModeInfoBlock *video_get_mode_info(int mode) {
   static ModeInfoBlock info;
@@ -71,21 +74,18 @@ void video_set_palette(int entry, int r, int g, int b) {
   outportb(0x3c9, (BYTE)g);
   outportb(0x3c9, (BYTE)b);
 }
-
-SCREEN *video_open() {
-  __dpmi_meminfo info;
+SCREEN *video_new_screen() { return (SCREEN *)malloc(sizeof(SCREEN)); }
+int video_open(SCREEN *screen, int video_mode) {
   __dpmi_regs reg;
   ModeInfoBlock *mb;
 
-  mb = video_get_mode_info(0x101);
+  mb = video_get_mode_info(video_mode);
 
   if (!mb) {
-    printf("Get VESA mode info failed.\n");
-    exit(1);
+    return ERR_CANT_GET_VESA_INFO;
   }
   if (!(mb->ModeAttributes & 0x80)) {
-    printf("Linear frame buffer not supported for VESA mode.\n");
-    exit(1);
+    return ERR_NO_LINEAR_FRAMEBUFFER;
   }
 
   width = mb->XResolution;
@@ -93,48 +93,52 @@ SCREEN *video_open() {
   info.size = width * height;
   info.address = mb->PhysBasePtr;
   if (__dpmi_physical_address_mapping(&info) == -1) {
-    printf("Physical mapping of address 0x%x failed!\n", mb->PhysBasePtr);
-    exit(2);
+    return ERR_PHYSICAL_MAP_FAILURE;
   }
   ADDR = info.address; /* Updated by above call */
-  printf("Vesa mode 0x101: %d x %d, linear frame: 0x%x\n", width, height, ADDR);
 
   reg.x.ax = 0x4f02;
-  reg.x.bx = 0x4101;      /* mode plus linear enable bit */
-  __dpmi_int(0x10, &reg); /* set the mode */
+  reg.x.bx =
+      video_mode | LINEAR_BIT;  // Add linear enable mode bit to video mode
+  __dpmi_int(0x10, &reg);
   if (reg.h.al != 0x4f || reg.h.ah) {
-    printf("Mode set failed!\n");
-    exit(3);
+    return ERR_CANT_SET_MODE;
   }
 
   video = (char *)(ADDR + __djgpp_conventional_base);
   bufsize = width * height * sizeof(BYTE);
 
-  SCREEN *screen = (SCREEN *)malloc(sizeof(SCREEN));
   screen->buffer = (char *)malloc(bufsize);
   screen->bufsize = bufsize;
   screen->width = width;
   screen->height = height;
 
-  return screen;
+  return ERR_OK;
 }
 
 void video_close(SCREEN *screen) {
   __dpmi_regs reg;
   reg.x.ax = 0x0003;
   __dpmi_int(0x10, &reg);
+  __dpmi_free_physical_address_mapping(&info);
   free(screen->buffer);
   free(screen);
 }
 
 void video_clear_buffer(SCREEN *screen) {
-  bzero(screen->buffer,screen->bufsize);
+  bzero(screen->buffer, screen->bufsize);
 }
 
-void video_clear_screen(){
-  bzero(video,bufsize);
-}
+void video_clear_screen() { bzero(video, bufsize); }
 
 void video_update_screen(SCREEN *screen) {
+  video_vsync_wait();
   memcpy(video, screen->buffer, screen->bufsize);
+}
+
+void video_vsync_wait(void) {
+  while ((inportb(0x3da) & 8) != 0)
+    ;
+  while ((inportb(0x3da) & 8) == 0)
+    ;
 }

@@ -20,9 +20,8 @@
 /// DEALINGS IN THE SOFTWARE.
 ///
 
-/* main.c */
+/* test.c */
 
-#include "test.h"
 #include <conio.h>
 #include <stdio.h>
 
@@ -31,7 +30,7 @@
 #include "../include/loop.h"
 #include "../include/video.h"
 
-int x, y, frames;
+int x, y, b, frames;
 SCREEN *screen;
 BLOCK *square1;
 
@@ -40,13 +39,13 @@ bool update() {
   if (kbhit()) {
     return true;
   }
-  if (x < 640) {
+  if (x + b < screen->width) {
     x++;
   } else {
     x = 0;
   }
-  if (y < 480) {
-    y += 5;
+  if (y + b < screen->height) {
+    y += 2;
   } else {
     y = 0;
   }
@@ -61,14 +60,22 @@ void render() {
 }
 
 int main(void) {
-  screen = video_open();
-  square1 = block_create(8, 8);
+  screen = video_new_screen();
+  int err = video_open(screen, MODE_800x600x8);
 
-  draw_hline(square1, 0, 52);
-  draw_hline(square1, 7, 52);
-  draw_vline(square1, 0, 52);
-  draw_vline(square1, 7, 52);
+  if (err != ERR_OK) {
+    printf(
+        "ERROR: Your video card must support VBE 2.0, linear framebuffer mode "
+        "\n"
+        "and be able to display 640x480 @ 8bpp.");
+    return 1;
+  }
 
+  b = 80;
+  square1 = block_create(b, b);
+
+  draw_filled_rect(square1,0,0,b,b,52);
+  
   int fps = loop_run(&update, &render, 60, 5);
   video_close(screen);
   printf("Exiting, ran at %f FPS. %d frames.\n", fps);

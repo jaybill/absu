@@ -1,4 +1,4 @@
-dosbox.exe -noconsole -userconf -conf dosbox-slow.conf \
+dosbox.exe -noconsole -userconf -conf dosbox.conf \
 -c "F:" \
 -c "cd bin" \
 -c "echo ----------------------- >> out.txt" \
