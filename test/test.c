@@ -23,28 +23,55 @@
 /* main.c */
 
 #include "test.h"
+#include <conio.h>
 #include <stdio.h>
 
 #include "../include/block.h"
 #include "../include/draw.h"
+#include "../include/loop.h"
 #include "../include/video.h"
 
-int main(void) {
-  SCREEN *screen = video_open();
+int x, y, frames;
+SCREEN *screen;
+BLOCK *square1;
 
-  BLOCK *square1 = block_create(20, 8);
+bool update() {
+  frames++;
+  if (kbhit()) {
+    return true;
+  }
+  if (x < 640) {
+    x++;
+  } else {
+    x = 0;
+  }
+  if (y < 480) {
+    y += 5;
+  } else {
+    y = 0;
+  }
+
+  return false;
+}
+
+void render() {
+  video_clear_buffer(screen);
+  block_copy_to_screen(screen, square1, x, y);
+  video_update_screen(screen);
+}
+
+int main(void) {
+  screen = video_open();
+  square1 = block_create(8, 8);
 
   draw_hline(square1, 0, 52);
   draw_hline(square1, 7, 52);
   draw_vline(square1, 0, 52);
-  draw_vline(square1, 19, 52);
+  draw_vline(square1, 7, 52);
 
-  block_copy_to_screen(screen, square1, 10, 10);
-
-  video_update_screen(screen);
-
-  getkey();
-
+  int fps = loop_run(&update, &render, 60, 5);
   video_close(screen);
+  printf("Exiting, ran at %f FPS. %d frames.\n", fps);
+
   return 0;
 }
