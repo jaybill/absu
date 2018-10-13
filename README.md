@@ -1,7 +1,7 @@
-# ABSU Game Library
+# absU Game Library
 
 ## What?
-ABSU is a library for writing games in C (or assembly language) that run on [DOSBox](https://dosbox.com) or Intel 80386 (or later) and 100% compatible based PCs running DOS (either [FreeDOS](http://www.freedos.org/) or [MS DOS](https://en.wikipedia.org/wiki/MS-DOS) ). It aims to provide graphics, sprites, input (keyboard/mouse/gamepad) handling, sound and a bunch of useful utilities. The library and programs that use it can currently only be compiled with [DJGPP](http://www.delorie.com/djgpp/), but [OpenWatcom](http://openwatcom.org/) will eventually be supported as well. It has no dependencies.
+absU is a library for writing games in C (or assembly language) that run on [DOSBox](https://dosbox.com) or Intel 80386 (or later) and 100% compatible based PCs running DOS (either [FreeDOS](http://www.freedos.org/) or [MS DOS](https://en.wikipedia.org/wiki/MS-DOS) ). It aims to provide graphics, sprites, tilemaps, collision detection, input (keyboard/mouse/gamepad) handling, sound and a bunch of useful utilities. The library and programs that use it can currently only be compiled with [DJGPP](http://www.delorie.com/djgpp/), but [OpenWatcom](http://openwatcom.org/) will eventually be supported as well. It has no dependencies.
 
 ## Installation
 The following instructions assume you're doing your development on a modern (as of 2018) computer running a recent version of Windows, OSX or Linux and essentially treating DOS as an embedded system. While I'm certain you could get the tools and all working _within a DOS environment_, you're on your own setting that up. If you do end up doing that and want to help with this project, feel free to write up directions and I'll include them in this package.
@@ -10,7 +10,7 @@ The following instructions assume you're doing your development on a modern (as 
 * [build-djgpp](https://github.com/andrewwutw/build-djgpp) will get the DJGPP cross compiler set up on a modern computer. All the directions on how to get that running and the prerequisites for _that_ are over there. Any of the supported platforms should work just fine, but only the MinGW setup under Windows 10 has been tested. 
 * One of the following, because your compiled programs will _not run_ on any recent version of Windows:
     * [DOSBox](https://www.dosbox.com/)
-    * [FreeDOS] or [MS DOS] running under virtualization with [QEMU] or [VirtualBox]
+    * [FreeDOS](http://freedos.org) or *MS DOS* (I'll leave you to track down a copy of it. It's not hard.) running under virtualization with [QEMU](http://qemu.org) or [VirtualBox](http://virtualbox.org)
     * An actual 386 PC running DOS, though doing this without doing one of the above is going to be _tedious_ as you'll have to get your programs onto said machine every time you compile them to run them.
 * The environment variable `DJGPP_CC` must be set to the full path of the cross compiler. On a *NIX-y system (Linux, OSX, MSYS) you can do that with `export DJGPP_CC=/local/djgpp/i586-pc-msdosdjgpp/bin/gcc.exe` (Yours will probably be slightly different.)
 * Some of the resource importing tools are written in [Python](https://www.python.org/), so if you want to use those, you'll need that.
@@ -39,6 +39,9 @@ There's no reason you couldn't just create a `deps/absu` folder in your project,
 
 ### Building as a shared library
 DJGPP can't do that.
+
+## What's with the name?
+It's short for "Absolute Unit". It's in no way associated with the black metal band [Absu](http://absu.us). I didn't actually know about them until after I named the library, but I have since become a fan.
 
 ## License
 

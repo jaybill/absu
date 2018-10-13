@@ -45,7 +45,7 @@ bool update() {
     x = 0;
   }
   if (y + b < screen->height) {
-    y += 2;
+    y += 1;
   } else {
     y = 0;
   }
@@ -61,7 +61,7 @@ void render() {
 
 int main(void) {
   screen = video_new_screen();
-  int err = video_open(screen, MODE_800x600x8);
+  int err = video_open(screen, MODE_640x480x8);
 
   if (err != ERR_OK) {
     printf(
