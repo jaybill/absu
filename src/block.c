@@ -29,14 +29,9 @@
 #include <stddef.h>
 #include <stdio.h>
 
-int block_init(BLOCK *block, int width, int height) {
-  if (block = (BLOCK *)malloc(sizeof(BLOCK)) == NULL) {
-    return ERR_CANT_ALLOCATE_MEMORY;
-  }
-
+int block_init(BLOCK *block, int width, int height) {  
   block->bufsize = width * height * sizeof(BYTE);
-
-  if (block->buffer = (char *)malloc(block->bufsize) == NULL) {
+  if (  (block->buffer = (char *)malloc(block->bufsize)) == NULL) {
     return ERR_CANT_ALLOCATE_MEMORY;
   }
   block->width = width;

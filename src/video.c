@@ -80,7 +80,7 @@ int video_open(SCREEN *screen, int video_mode) {
   ModeInfoBlock *mb;
 
   mb = video_get_mode_info(video_mode);
-  return 0;
+  
   if (!mb) {
     return ERR_CANT_GET_VESA_INFO;
   }
@@ -108,7 +108,7 @@ int video_open(SCREEN *screen, int video_mode) {
   video = (char *)(ADDR + __djgpp_conventional_base);
   bufsize = width * height * sizeof(BYTE);
 
-  if (screen->buffer = (char *)malloc(bufsize) == NULL) {
+  if ((screen->buffer = (char *)malloc(bufsize)) == NULL) {
     return ERR_CANT_ALLOCATE_MEMORY;
   }
 

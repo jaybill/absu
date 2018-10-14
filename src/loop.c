@@ -26,7 +26,7 @@
 #include <stdint.h>
 #include <time.h>
 
-float loop_run(bool (*update)(), void (*render)(), int target_fps,
+void loop_run(bool (*update)(), void (*render)(), int target_fps,
                int max_frameskip) {
   int32_t skip_ticks = UCLOCKS_PER_SEC / target_fps;
   uclock_t next_game_tick = uclock();
@@ -45,9 +45,5 @@ float loop_run(bool (*update)(), void (*render)(), int target_fps,
     }
     render();
   }
-  printf("Updates: %d\n", updates);
-  uclock_t end_time = uclock();
-  uclock_t total_time = end_time - start_time;
-  float total_seconds = (float)total_time / (float)UCLOCKS_PER_SEC;
-  return (float)updates / total_seconds;
+
 }

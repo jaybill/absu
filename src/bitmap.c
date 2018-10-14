@@ -54,15 +54,9 @@ void load_bmp(char *file, BITMAP *b) {
   word num_colors;
   int x;
 
-  char *buf = (char *)malloc(PATH_MAX);
+  /* open the file */
 
-  if (buf && getcwd(buf, PATH_MAX)) {
-    printf("cwd is %s\n", buf);
-    free(buf);
-  }
-  return 0;
-  // /* open the file */
-  // // fp = fopen(file, "rb");
+  fp = fopen(file, "rb");
 
   // // printf("FP is %d\n",fp->_bufsiz);
   // return;
@@ -107,7 +101,7 @@ void load_bmp(char *file, BITMAP *b) {
   //   for (x = 0; x < b->width; x++) b->data[(word)index + x] =
   //   (byte)fgetc(fp);
 
-  // fclose(fp);
+  fclose(fp);
 }
 
 /**************************************************************************

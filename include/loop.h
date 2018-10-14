@@ -25,7 +25,7 @@
 #define ABSU_LOOP_H
 #include <stdbool.h>
 
-float loop_run(bool (*update)(), void (*render)(), int target_fps,
+void loop_run(bool (*update)(), void (*render)(), int target_fps,
                int max_frameskip);
 
 #endif  // !ABSU_LOOP_H

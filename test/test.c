@@ -26,7 +26,6 @@
 #include <limits.h>
 #include <stdio.h>
 
-#include "../include/bitmap.h"
 #include "../include/block.h"
 #include "../include/draw.h"
 #include "../include/loop.h"
@@ -36,7 +35,6 @@
 int x, y, b, frames;
 SCREEN *screen;
 BLOCK *square1;
-BLOCK *square2;
 
 bool update() {
   frames++;
@@ -64,17 +62,25 @@ void render() {
 }
 
 int main(void) {
+  if ((screen = (SCREEN *)malloc(sizeof(SCREEN))) == NULL) {
+    printf("ERROR: Could not allocate memory for screen.");
+    return 1;
+  }
+
   int err = video_open(screen, MODE_640x480x8);
-  
+
   if (err != OK) {
     printf(
-        "ERROR: Your video card must support VBE 2.0, linear framebuffer mode"
-        "\n"
+        "ERROR: Your video card must be VESA 2.0, linear framebuffer mode\n"
         "and be able to display 640x480 @ 8bpp.");
     return 1;
   }
 
   b = 80;
+  if ((square1 = (BLOCK *)malloc(sizeof(BLOCK))) == NULL) {
+    return ERR_CANT_ALLOCATE_MEMORY;
+  }
+
   int berr = block_init(square1, b, b);
   if (berr != OK) {
     printf("ERROR: Could not allocate memory for block.");
@@ -83,27 +89,12 @@ int main(void) {
 
   draw_filled_rect(square1, 0, 0, b, b, 52);
 
-  // BITMAP bmp;
-
-  // load_bmp("test.bmp", &bmp); /* open the file */
-
-  int fps = loop_run(&update, &render, 60, 5);
+  loop_run(&update, &render, 60, 5);
 
   video_close(screen);
-  block_free(square1);
 
-  char *buf;
-  if ((buf = (char *)malloc(PATH_MAX)) == NULL) {
-    printf("could not allocate memory for string");
-    return 1;
-  }
-
-  if (buf && getcwd(buf, PATH_MAX)) {
-    printf("cwd is %s\n", buf);
-    free(buf);
-  } else {
-    printf("Got nothing?");
-  }
+  free(square1->buffer);
+  free(square1);
 
   return 0;
 }
