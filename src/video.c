@@ -74,13 +74,13 @@ void video_set_palette(int entry, int r, int g, int b) {
   outportb(0x3c9, (BYTE)g);
   outportb(0x3c9, (BYTE)b);
 }
-SCREEN *video_new_screen() { return (SCREEN *)malloc(sizeof(SCREEN)); }
+
 int video_open(SCREEN *screen, int video_mode) {
   __dpmi_regs reg;
   ModeInfoBlock *mb;
 
   mb = video_get_mode_info(video_mode);
-
+  return 0;
   if (!mb) {
     return ERR_CANT_GET_VESA_INFO;
   }
@@ -108,12 +108,15 @@ int video_open(SCREEN *screen, int video_mode) {
   video = (char *)(ADDR + __djgpp_conventional_base);
   bufsize = width * height * sizeof(BYTE);
 
-  screen->buffer = (char *)malloc(bufsize);
+  if (screen->buffer = (char *)malloc(bufsize) == NULL) {
+    return ERR_CANT_ALLOCATE_MEMORY;
+  }
+
   screen->bufsize = bufsize;
   screen->width = width;
   screen->height = height;
 
-  return ERR_OK;
+  return OK;
 }
 
 void video_close(SCREEN *screen) {

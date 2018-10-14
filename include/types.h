@@ -1,3 +1,4 @@
+///
 /// Copyright (C) 2018, Jaybill McCarthy
 ///
 /// Permission is hereby granted, free of charge, to any person obtaining a
@@ -19,30 +20,24 @@
 /// DEALINGS IN THE SOFTWARE.
 ///
 
-/* video.h */
+/* types.h */
 
-#ifndef ABSU_VIDEO_H
-#define ABSU_VIDEO_H
+#ifndef ABSU_TYPES_H
+#define ABSU_TYPES_H
 
-#include "types.h"
+#define BYTE unsigned char
 
-#define MODE_640x480x8 0x101
-#define MODE_800x600x8 0x103
-#define MODE_1024x768x8 0x105
+#define OK 0
+#define ERR_CANT_GET_VESA_INFO 1
+#define ERR_NO_LINEAR_FRAMEBUFFER 2
+#define ERR_PHYSICAL_MAP_FAILURE 3
+#define ERR_CANT_SET_MODE 4
+#define ERR_CANT_OPEN_BITMAP_FILE 5
+#define ERR_NOT_A_BITMAP 6
+#define ERR_CANT_ALLOCATE_MEMORY 7
 
+typedef unsigned char byte;
+typedef unsigned short word;
+typedef unsigned long dword;
 
-
-typedef struct screens {
-  int width, height, bpp, bufsize;
-  char *buffer;
-} SCREEN;
-
-SCREEN *video_new_screen();
-int video_open(SCREEN *screen, int video_mode);
-void video_close(SCREEN *screen);
-void video_update_screen(SCREEN *screen);
-void video_set_palette(int entry, int r, int g, int b);
-void video_clear_buffer(SCREEN *screen);
-void video_vsync_wait();
-
-#endif  // !ABSU_VIDEO_H
+#endif  // !ABSU_TYPES_H

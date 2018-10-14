@@ -7,7 +7,7 @@ LIBDIR		= lib
 TESTDIR		= test
 
 CC        	= $(DJGPP_CC)
-CFLAGS    	= -DHAVE_STDBOOL_H=1 -w 
+CFLAGS    	= -g -DHAVE_STDBOOL_H=1 -w
 LDFLAGS   	= -L${LIBDIR} -labsu
 AR			= ar
 
@@ -15,7 +15,7 @@ AR			= ar
 SRC       = $(shell find $(SRCDIR) -name "*.c" 2> /dev/null)
 OBJS      = $(SRC:%.c=%.o)
 
-.PHONY: clean dir lib
+.PHONY: clean dir lib testdata
 default: all
 
 check_djgpp:
@@ -32,15 +32,20 @@ dir:
 	${CC} -c -o $@ $? ${CFLAGS}
 
 ${BINDIR}/${BIN}.exe: | ${LIBDIR}/${LIB}
-	${CC} -c -w ${TESTDIR}/${BIN}.c -o ${TESTDIR}/${BIN}.o
-	${CC} ${TESTDIR}/test.o -o ${BINDIR}/${BIN}.exe ${LDFLAGS}
+	${CC} -c -g -w ${TESTDIR}/${BIN}.c -o ${TESTDIR}/${BIN}.o
+	${CC} ${TESTDIR}/test.o -g -o ${BINDIR}/${BIN}.exe ${LDFLAGS}
+	${CC} ${TESTDIR}/bitmap.c -o ${BINDIR}/BITMAP.EXE -g -w
 
 ${LIBDIR}/${LIB}: ${OBJS}
 	${AR} rcs ${LIBDIR}/${LIB} $+
 
 lib: dir ${LIBDIR}/${LIB}
 
-all: dir ${LIBDIR}/${LIB} ${BINDIR}/${BIN}.exe
+all: dir ${LIBDIR}/${LIB} ${BINDIR}/${BIN}.exe testdata
+
+testdata:
+	cp ${TESTDIR}/test.bmp ${BINDIR}
+	cp ${TESTDIR}/rocket.bmp ${BINDIR}
 
 clean:
 	rm -rf ${LIBDIR}/*

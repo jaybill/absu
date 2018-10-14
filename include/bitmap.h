@@ -1,3 +1,4 @@
+///
 /// Copyright (C) 2018, Jaybill McCarthy
 ///
 /// Permission is hereby granted, free of charge, to any person obtaining a
@@ -19,30 +20,21 @@
 /// DEALINGS IN THE SOFTWARE.
 ///
 
-/* video.h */
+/* bitmap.h */
 
-#ifndef ABSU_VIDEO_H
-#define ABSU_VIDEO_H
+#ifndef ABSU_BITMAP_H
+#define ABSU_BITMAP_H
 
+#include "block.h"
 #include "types.h"
 
-#define MODE_640x480x8 0x101
-#define MODE_800x600x8 0x103
-#define MODE_1024x768x8 0x105
+typedef struct tagBITMAP /* the structure for a bitmap. */
+{
+  word width;
+  word height;
+  byte *data;
+} BITMAP;
 
+void load_bmp(char *file, BITMAP *b);
 
-
-typedef struct screens {
-  int width, height, bpp, bufsize;
-  char *buffer;
-} SCREEN;
-
-SCREEN *video_new_screen();
-int video_open(SCREEN *screen, int video_mode);
-void video_close(SCREEN *screen);
-void video_update_screen(SCREEN *screen);
-void video_set_palette(int entry, int r, int g, int b);
-void video_clear_buffer(SCREEN *screen);
-void video_vsync_wait();
-
-#endif  // !ABSU_VIDEO_H
+#endif  // !ABSU_BITMAP_H
