@@ -41,14 +41,14 @@ void draw_vline(BLOCK *block, int x, int y, int l, int color) {
 }
 
 void draw_rect(BLOCK *block, int x, int y, int w, int h, int color) {
-  draw_hline(block, x, y, w, 52);
-  draw_hline(block, x, h - 1, w, 52);
-  draw_vline(block, x, y, w, 52);
-  draw_vline(block, w - 1, y, w, 52);
+  draw_hline(block, x, y, w, color);
+  draw_hline(block, x, h - 1, w, color);
+  draw_vline(block, x, y, w, color);
+  draw_vline(block, w - 1, y, w, color);
 }
 
 void draw_filled_rect(BLOCK *block, int x, int y, int w, int h, int color) {
-  for (size_t i = y; i <= h; i++) {
+  for (size_t i = y; i < h; i++) {
     draw_hline(block, x, i, w, color);
   }
 }

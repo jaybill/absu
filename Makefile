@@ -1,13 +1,12 @@
 
 CC = gcc
-#FLAGS = -Wall -Os
+FLAGS = -Wall -O2
 
 all: test.exe
 
 test.exe: test\test.c
 	$(CC) $(FLAGS) -o bin\test.exe \
 	test\test.c \
-	src\bitmap.c \
 	src\block.c \
 	src\draw.c \
 	src\input.c \

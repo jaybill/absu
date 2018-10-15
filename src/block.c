@@ -26,14 +26,17 @@
 /* block.c */
 
 #include "../include/block.h"
-#include <stddef.h>
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
-int block_init(BLOCK *block, int width, int height) {  
+int block_init(BLOCK *block, int width, int height) {
   block->bufsize = width * height * sizeof(BYTE);
-  if (  (block->buffer = (char *)malloc(block->bufsize)) == NULL) {
+  block->buffer = (char *)malloc(block->bufsize);
+  if (block->buffer == NULL) {
     return ERR_CANT_ALLOCATE_MEMORY;
   }
+  bzero(block->buffer, block->bufsize);
   block->width = width;
   block->height = height;
   return OK;
@@ -45,7 +48,6 @@ void block_free(BLOCK *block) {
 }
 
 void block_copy_to_screen(SCREEN *screen, BLOCK *block, int x, int y) {
-  int drawn_pixels = 0;
   // loop through lines of block - copy entire line
   for (size_t i = 0; i < block->height; i++) {
     memcpy(&screen->buffer[x + (screen->width * (y + i))],

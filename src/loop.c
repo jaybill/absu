@@ -27,14 +27,13 @@
 #include <time.h>
 
 void loop_run(bool (*update)(), void (*render)(), int target_fps,
-               int max_frameskip) {
+              int max_frameskip) {
   int32_t skip_ticks = UCLOCKS_PER_SEC / target_fps;
   uclock_t next_game_tick = uclock();
-  uclock_t start_time = next_game_tick;
   uclock_t game_time = uclock();
   int loops, updates;
   bool exit_now = false;
-  while (!exit_now) {
+  do {
     game_time = uclock();
     loops = 0;
     while (game_time > next_game_tick && loops < max_frameskip) {
@@ -44,6 +43,5 @@ void loop_run(bool (*update)(), void (*render)(), int target_fps,
       updates++;
     }
     render();
-  }
-
+  } while (!exit_now);
 }

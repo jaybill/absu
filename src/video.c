@@ -28,6 +28,7 @@
 #include <pc.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <crt0.h>
 #include <sys/nearptr.h>
@@ -80,7 +81,7 @@ int video_open(SCREEN *screen, int video_mode) {
   ModeInfoBlock *mb;
 
   mb = video_get_mode_info(video_mode);
-  
+
   if (!mb) {
     return ERR_CANT_GET_VESA_INFO;
   }
@@ -107,8 +108,8 @@ int video_open(SCREEN *screen, int video_mode) {
 
   video = (char *)(ADDR + __djgpp_conventional_base);
   bufsize = width * height * sizeof(BYTE);
-
-  if ((screen->buffer = (char *)malloc(bufsize)) == NULL) {
+  screen->buffer = (char *)malloc(bufsize);
+  if (screen->buffer == NULL) {
     return ERR_CANT_ALLOCATE_MEMORY;
   }
 

@@ -25,6 +25,7 @@
 #include <conio.h>
 #include <limits.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "../include/block.h"
 #include "../include/draw.h"
@@ -77,8 +78,11 @@ int main(void) {
   }
 
   b = 80;
-  if ((square1 = (BLOCK *)malloc(sizeof(BLOCK))) == NULL) {
-    return ERR_CANT_ALLOCATE_MEMORY;
+  square1 = (BLOCK *)malloc(sizeof(BLOCK));
+
+  if (square1 == NULL) {
+    printf("Could not allocate memory for block");
+    return 1;
   }
 
   int berr = block_init(square1, b, b);
@@ -92,9 +96,7 @@ int main(void) {
   loop_run(&update, &render, 60, 5);
 
   video_close(screen);
-
-  free(square1->buffer);
-  free(square1);
-
+  block_free(square1);
+  
   return 0;
 }
