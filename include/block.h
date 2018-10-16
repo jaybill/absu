@@ -28,7 +28,7 @@
 
 typedef struct blocks {
   int width, height, bufsize;
-  char *buffer;
+  BYTE *buffer;
 } BLOCK;
 
 int block_init(BLOCK *block, int width, int height);

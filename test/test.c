@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "../include/bitmap.h"
 #include "../include/block.h"
 #include "../include/draw.h"
 #include "../include/loop.h"
@@ -72,31 +73,25 @@ int main(void) {
 
   if (err != OK) {
     printf(
-        "ERROR: Your video card must be VESA 2.0, linear framebuffer mode\n"
-        "and be able to display 640x480 @ 8bpp.");
+        "ERROR: Your video card must be VESA 2.0, have linear framebuffer \n"
+        "mode and be able to display 640x480 @ 8bpp.");
     return 1;
   }
 
   b = 80;
-  square1 = (BLOCK *)malloc(sizeof(BLOCK));
-
-  if (square1 == NULL) {
-    printf("Could not allocate memory for block");
+  if ((square1 = (BLOCK *)malloc(sizeof(BLOCK))) == NULL) {
+    printf("ERROR: Couldn't allocate memory for bitmap.");
     return 1;
   }
 
-  int berr = block_init(square1, b, b);
-  if (berr != OK) {
-    printf("ERROR: Could not allocate memory for block.");
-    return 1;
+  if (bitmap_load("test.bmp", square1) != OK) {
+    printf("ERROR: Can't load bitmap.");
   }
-
-  draw_filled_rect(square1, 0, 0, b, b, 52);
 
   loop_run(&update, &render, 60, 5);
-
   video_close(screen);
+
   block_free(square1);
-  
+  printf("Exiting sanely.\n");
   return 0;
 }

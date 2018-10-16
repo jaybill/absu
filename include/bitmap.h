@@ -28,13 +28,7 @@
 #include "block.h"
 #include "types.h"
 
-typedef struct tagBITMAP /* the structure for a bitmap. */
-{
-  word width;
-  word height;
-  byte *data;
-} BITMAP;
 
-void load_bmp(char *file, BITMAP *b);
+int bitmap_load(char *file, BLOCK *b);
 
 #endif  // !ABSU_BITMAP_H

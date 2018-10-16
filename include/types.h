@@ -26,18 +26,15 @@
 #define ABSU_TYPES_H
 
 #define BYTE unsigned char
+#define WORD unsigned short
 
 #define OK 0
 #define ERR_CANT_GET_VESA_INFO 1
 #define ERR_NO_LINEAR_FRAMEBUFFER 2
 #define ERR_PHYSICAL_MAP_FAILURE 3
 #define ERR_CANT_SET_MODE 4
-#define ERR_CANT_OPEN_BITMAP_FILE 5
+#define ERR_CANT_OPEN_FILE 5
 #define ERR_NOT_A_BITMAP 6
 #define ERR_CANT_ALLOCATE_MEMORY 7
-
-typedef unsigned char byte;
-typedef unsigned short word;
-typedef unsigned long dword;
 
 #endif  // !ABSU_TYPES_H

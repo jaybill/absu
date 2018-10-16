@@ -32,7 +32,7 @@
 
 int block_init(BLOCK *block, int width, int height) {
   block->bufsize = width * height * sizeof(BYTE);
-  block->buffer = (char *)malloc(block->bufsize);
+  block->buffer = (BYTE *)malloc(block->bufsize);
   if (block->buffer == NULL) {
     return ERR_CANT_ALLOCATE_MEMORY;
   }
