@@ -24,6 +24,7 @@
 
 #include <conio.h>
 #include <limits.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -43,13 +44,13 @@ bool update() {
   if (kbhit()) {
     return true;
   }
-  if (x + b < screen->width) {
+  if (x + square1->width < screen->width) {
     x++;
   } else {
     x = 0;
   }
-  if (y + b < screen->height) {
-    y += 1;
+  if (y + square1->height < screen->height) {
+    y++;
   } else {
     y = 0;
   }
@@ -78,7 +79,6 @@ int main(void) {
     return 1;
   }
 
-  b = 80;
   if ((square1 = (BLOCK *)malloc(sizeof(BLOCK))) == NULL) {
     printf("ERROR: Couldn't allocate memory for bitmap.");
     return 1;

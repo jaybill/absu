@@ -1,6 +1,6 @@
 
 CC = gcc
-FLAGS = -Wall -O2
+FLAGS = -Wall -g
 
 all: test.exe testdata
 

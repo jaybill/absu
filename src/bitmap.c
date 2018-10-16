@@ -45,16 +45,27 @@ int bitmap_load(char *file, BLOCK *b) {
     return ERR_CANT_ALLOCATE_MEMORY;
   }
 
-  /* Ignore the palette information for now.
-     See palette.c for code to read the palette info. */
-  fskip(fp, num_colors * 4);
+  /* read the palette information */
+  int p = 0;
+  for (index = 0; index < num_colors; index++) {
+    COLOR c;
+    c.b = fgetc(fp) >> 2;
+    c.g = fgetc(fp) >> 2;
+    c.r = fgetc(fp) >> 2;
+    video_set_palette(index, c);
+    // printf("index: %d r: %d g: %d b: %d\n", p, c.r, c.g, c.b);
+    x = fgetc(fp);
+    p++;
+  }
 
   /* read the bitmap */
+
   for (index = (b->height - 1) * b->width; index >= 0; index -= b->width) {
     for (x = 0; x < b->width; x++) {
       b->buffer[(WORD)index + x] = (BYTE)fgetc(fp);
     }
   }
   fclose(fp);
+
   return OK;
 }

@@ -30,18 +30,20 @@
 #define MODE_800x600x8 0x103
 #define MODE_1024x768x8 0x105
 
-
-
 typedef struct screens {
   int width, height, bpp, bufsize;
   char *buffer;
 } SCREEN;
 
+typedef struct colors {
+  BYTE r, g, b;
+} COLOR;
+
 SCREEN *video_new_screen();
 int video_open(SCREEN *screen, int video_mode);
 void video_close(SCREEN *screen);
 void video_update_screen(SCREEN *screen);
-void video_set_palette(int entry, int r, int g, int b);
+void video_set_palette(int entry, COLOR color);
 void video_clear_buffer(SCREEN *screen);
 void video_vsync_wait();
 

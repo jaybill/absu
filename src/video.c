@@ -69,11 +69,11 @@ ModeInfoBlock *video_get_mode_info(int mode) {
   return &info;
 }
 
-void video_set_palette(int entry, int r, int g, int b) {
+void video_set_palette(int entry, COLOR color) {
   outportb(0x3c8, (BYTE)entry);
-  outportb(0x3c9, (BYTE)r);
-  outportb(0x3c9, (BYTE)g);
-  outportb(0x3c9, (BYTE)b);
+  outportb(0x3c9, (BYTE)color.r);
+  outportb(0x3c9, (BYTE)color.g);
+  outportb(0x3c9, (BYTE)color.b);
 }
 
 int video_open(SCREEN *screen, int video_mode) {
