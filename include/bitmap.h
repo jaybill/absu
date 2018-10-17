@@ -28,7 +28,12 @@
 #include "block.h"
 #include "types.h"
 
-
+/**
+ * Takes a filename and pointer to a block. Loads the bitmap into the block and
+ * sets the height, width and bufsize properties of the block accordingly.
+ * Returns OK (0) if it worked, an int matching an error constant (see types.h)
+ * if it didn't.
+ */
 int bitmap_load(char *file, BLOCK *b);
 
 #endif  // !ABSU_BITMAP_H
