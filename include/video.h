@@ -21,6 +21,12 @@
 
 /* video.h */
 
+/** 
+ * @file video.h
+ * @brief A brief file description.
+ * A more elaborated file description.
+ */
+
 #ifndef ABSU_VIDEO_H
 #define ABSU_VIDEO_H
 
@@ -30,8 +36,14 @@
 #define MODE_800x600x8 0x103
 #define MODE_1024x768x8 0x105
 
+/**
+ * A global integer value.
+ * More details about this value.
+ */
 typedef struct screens {
-  int width, height, bpp, bufsize;
+  int width; /**< Width of the screen in pixels */
+  int height;
+  int bufsize;
   char *buffer;
 } SCREEN;
 

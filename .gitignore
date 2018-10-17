@@ -8,3 +8,5 @@ dist
 bin
 lib
 .vscode
+html
+latex
