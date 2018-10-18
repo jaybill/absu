@@ -1,4 +1,5 @@
-/* Copyright (C) 2018, Jaybill McCarthy
+/*
+ * Copyright (C) 2018, Jaybill McCarthy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,7 +20,9 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-/** @file bitmap.h */
+/** @file bitmap.h
+ * @brief Functions for interacting with bitmap files
+ */
 
 #ifndef ABSU_BITMAP_H
 #define ABSU_BITMAP_H
@@ -30,8 +33,11 @@
 /**
  * Takes a filename and pointer to a block. Loads the bitmap into the
  * block and sets the height, width and bufsize properties of the block
- * accordingly. Returns OK (0) if it worked, an int matching an error constant
- * (see types.h) if it didn't.
+ * accordingly. Returns @OK if it worked and ERR_CANT_OPEN_FILE,
+ * ERR_NOT_A_BITMAP or ERR_CANT_ALLOCATE_MEMORY if ot doesn't.
+ *
+ * NOTE: If you create a BLOCK with this, you must call @block_free on it when
+ * you're done to free the buffer memory.
  */
 int bitmap_load(char *file, BLOCK *b);
 

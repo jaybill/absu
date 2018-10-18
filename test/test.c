@@ -1,24 +1,25 @@
 
-/// Copyright (C) 2018, Jaybill McCarthy
-///
-/// Permission is hereby granted, free of charge, to any person obtaining a
-/// copy of this software and associated documentation files (the "Software"),
-/// to deal in the Software without restriction, including without limitation
-/// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-/// and/or sell copies of the Software, and to permit persons to whom the
-/// Software is furnished to do so, subject to the following conditions:
-///
-/// The above copyright notice and this permission notice shall be included in
-/// all copies or substantial portions of the Software.
-///
-/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
-/// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-/// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-/// DEALINGS IN THE SOFTWARE.
-///
+/*
+ * Copyright (C) 2018, Jaybill McCarthy
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
 
 /* test.c */
 
@@ -35,12 +36,11 @@
 #include "../include/types.h"
 #include "../include/video.h"
 
-int x, y, b, frames;
+int x, y;
 SCREEN *screen;
 BLOCK *square1;
 
 bool update() {
-  frames++;
   if (kbhit()) {
     return true;
   }
@@ -65,10 +65,8 @@ void render() {
 }
 
 int main(void) {
-  if ((screen = (SCREEN *)malloc(sizeof(SCREEN))) == NULL) {
-    printf("ERROR: Could not allocate memory for screen.");
-    return 1;
-  }
+  SCREEN s;
+  screen = &s;
 
   int err = video_open(screen, MODE_640x480x8);
 
@@ -78,17 +76,14 @@ int main(void) {
         "mode and be able to display 640x480 @ 8bpp.");
     return 1;
   }
-
-  if ((square1 = (BLOCK *)malloc(sizeof(BLOCK))) == NULL) {
-    printf("ERROR: Couldn't allocate memory for bitmap.");
-    return 1;
-  }
+  BLOCK b;
+  square1 = &b;
 
   if (bitmap_load("test.bmp", square1) != OK) {
     printf("ERROR: Can't load bitmap.");
   }
 
-  loop_run(&update, &render, 60, 5);
+  loop_run(&update, &render, 60);
   video_close(screen);
 
   block_free(square1);

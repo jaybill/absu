@@ -19,12 +19,9 @@
 /// DEALINGS IN THE SOFTWARE.
 ///
 
-/* video.h */
-
-/** 
+/**
  * @file video.h
- * @brief A brief file description.
- * A more elaborated file description.
+ * @brief Video and screen functions.
  */
 
 #ifndef ABSU_VIDEO_H
@@ -37,26 +34,57 @@
 #define MODE_1024x768x8 0x105
 
 /**
- * A global integer value.
- * More details about this value.
+ * @brief describes the screen.
  */
-typedef struct screens {
-  int width; /**< Width of the screen in pixels */
-  int height;
-  int bufsize;
-  char *buffer;
+typedef struct {
+  int width;    /**< Width of the screen in pixels */
+  int height;   /**< Height of the screen in pixels */
+  int bufsize;  /**< Buffer size in BYTEs */
+  char *buffer; /**< Pointer to the screen memory buffer */
 } SCREEN;
 
-typedef struct colors {
-  BYTE r, g, b;
+/**
+ * @brief describes a single RGB color.
+ */
+typedef struct {
+  BYTE r; /**< Red BYTE of the color */
+  BYTE g; /**< Green BYTE of the color */
+  BYTE b; /**< Blue BYTE of the color */
 } COLOR;
 
-SCREEN *video_new_screen();
+/**
+ * @brief initializes SCREEN to one of the available modes.
+ * 
+ * Choices are MODE_640x480x8, MODE_800x600x8 and MODE_1024x768x8. This must
+ * be called on the SCREEN before you can copy a BLOCK to it with
+ * @block_copy_to_screen. Returns @OK if it worked and ERR_CANT_GET_VESA_INFO,
+ * ERR_NO_LINEAR_FRAMEBUFFER, ERR_CANT_ALLOCATE_MEMORY, ERR_CANT_SET_MODE or
+ * ERR_PHYSICAL_MAP_FAILURE if ot doesn't.
+ *
+ * NOTE: When you are done with graphics mode, you must call @video_close on the
+ * SCREEN pointer to free the buffer memory.
+ */
 int video_open(SCREEN *screen, int video_mode);
+/**
+ * @brief Sets video back to text mode and frees the screen buffer memory.
+ * Generally called right before you exit your program.
+ */
 void video_close(SCREEN *screen);
+/**
+ * @brief Copies whatever is in @buffer to the actual video memory
+ */
 void video_update_screen(SCREEN *screen);
+/**
+ * @brief sets palette @entry to @color
+ */
 void video_set_palette(int entry, COLOR color);
+/**
+ * @brief zeros memory in screen buffer
+ */
 void video_clear_buffer(SCREEN *screen);
+/** 
+ * @brief waits until the next refresh
+*/
 void video_vsync_wait();
 
 #endif  // !ABSU_VIDEO_H

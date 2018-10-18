@@ -20,7 +20,7 @@
 /// DEALINGS IN THE SOFTWARE.
 ///
 
-/* types.h */
+/** @file types.h */
 
 #ifndef ABSU_TYPES_H
 #define ABSU_TYPES_H
@@ -28,13 +28,17 @@
 #define BYTE unsigned char
 #define WORD unsigned short
 
-#define OK 0
-#define ERR_CANT_GET_VESA_INFO 1
-#define ERR_NO_LINEAR_FRAMEBUFFER 2
-#define ERR_PHYSICAL_MAP_FAILURE 3
-#define ERR_CANT_SET_MODE 4
-#define ERR_CANT_OPEN_FILE 5
-#define ERR_NOT_A_BITMAP 6
-#define ERR_CANT_ALLOCATE_MEMORY 7
+#define OK 0 /**< @brief Everything is fine. We're all fine here. How are you? */
+#define ERR_CANT_GET_VESA_INFO 1 /**< @brief Error getting VESA info from the card */
+#define ERR_NO_LINEAR_FRAMEBUFFER \
+  2 /**< @brief The installed card does not have linear framebuffer mode */
+#define ERR_PHYSICAL_MAP_FAILURE \
+  3 /**< @brief Couldn't map to the physical video memory */
+#define ERR_CANT_SET_MODE \
+  4 /**< @brief The video card does not support the requested video mode */
+#define ERR_CANT_OPEN_FILE 5 /**< @brief Can't open the file */
+#define ERR_NOT_A_BITMAP 6   /**< @brief The file supplied is not a BMP bitmap file */
+#define ERR_CANT_ALLOCATE_MEMORY \
+  7 /**< @brief Can't allocate memory. Usually means there's not enough. */
 
 #endif  // !ABSU_TYPES_H

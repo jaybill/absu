@@ -1,25 +1,27 @@
-/// Copyright (C) 2018, Jaybill McCarthy
-///
-/// Permission is hereby granted, free of charge, to any person obtaining a
-/// copy of this software and associated documentation files (the "Software"),
-/// to deal in the Software without restriction, including without limitation
-/// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-/// and/or sell copies of the Software, and to permit persons to whom the
-/// Software is furnished to do so, subject to the following conditions:
-///
-/// The above copyright notice and this permission notice shall be included in
-/// all copies or substantial portions of the Software.
-///
-/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
-/// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-/// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-/// DEALINGS IN THE SOFTWARE.
-///
+/*
+ * Copyright (C) 2018, Jaybill McCarthy
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
 
-/* video.c */
+/** @file video.c */
+
 #include "../include/video.h"
 
 #include <dos.h>
@@ -47,15 +49,15 @@ typedef struct {
   unsigned bogus1, bogus2, bogus3, bogus4;
   unsigned PhysBasePtr;
   char bogus[228];
-} ModeInfoBlock;
+} MODE_INFO;
 
 unsigned int ADDR;
 int width, height, bufsize;
 char *video;
 __dpmi_meminfo info;
 
-ModeInfoBlock *video_get_mode_info(int mode) {
-  static ModeInfoBlock info;
+MODE_INFO *video_get_mode_info(int mode) {
+  static MODE_INFO info;
   __dpmi_regs r;
 
   /* Use the transfer buffer to store the results of VBE call */
@@ -65,7 +67,7 @@ ModeInfoBlock *video_get_mode_info(int mode) {
   r.x.di = 0;
   __dpmi_int(0x10, &r);
   if (r.h.ah) return 0;
-  dosmemget(__tb, sizeof(ModeInfoBlock), &info);
+  dosmemget(__tb, sizeof(MODE_INFO), &info);
   return &info;
 }
 
@@ -78,7 +80,7 @@ void video_set_palette(int entry, COLOR color) {
 
 int video_open(SCREEN *screen, int video_mode) {
   __dpmi_regs reg;
-  ModeInfoBlock *mb;
+  MODE_INFO *mb;
 
   mb = video_get_mode_info(video_mode);
 
@@ -126,7 +128,6 @@ void video_close(SCREEN *screen) {
   __dpmi_int(0x10, &reg);
   __dpmi_free_physical_address_mapping(&info);
   free(screen->buffer);
-  free(screen);
 }
 
 void video_clear_buffer(SCREEN *screen) {
