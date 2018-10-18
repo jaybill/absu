@@ -32,61 +32,69 @@
 #include "../include/bitmap.h"
 #include "../include/block.h"
 #include "../include/draw.h"
+#include "../include/input.h"
 #include "../include/loop.h"
 #include "../include/types.h"
 #include "../include/video.h"
 
-int x, y;
+int x, y, key;
 SCREEN *screen;
 BLOCK *square1;
 
 bool update() {
-  if (kbhit()) {
+  key = input_get_key();
+  if (key != -1) {
+    printf("Key is 0x%04x\n", key);
+  }
+  if (key == KEY_ESC) {
     return true;
   }
-  if (x + square1->width < screen->width) {
-    x++;
-  } else {
-    x = 0;
+  if (key == KEY_A || key == KEY_SHIFT_A) {
+    printf("Key was A\n");
   }
-  if (y + square1->height < screen->height) {
-    y++;
-  } else {
-    y = 0;
-  }
+  // if (x + square1->width < screen->width) {
+  //   x++;
+  // } else {
+  //   x = 0;
+  // }
+  // if (y + square1->height < screen->height) {
+  //   y++;
+  // } else {
+  //   y = 0;
+  // }
 
   return false;
 }
 
 void render() {
-  video_clear_buffer(screen);
-  block_copy_to_screen(screen, square1, x, y);
-  video_update_screen(screen);
+  // video_clear_buffer(screen);
+  // block_copy_to_screen(screen, square1, x, y);
+  // video_update_screen(screen);
 }
 
 int main(void) {
-  SCREEN s;
-  screen = &s;
+  // SCREEN s;
+  // screen = &s;
 
-  int err = video_open(screen, MODE_640x480x8);
+  // int err = video_open(screen, MODE_640x480x8);
 
-  if (err != OK) {
-    printf(
-        "ERROR: Your video card must be VESA 2.0, have linear framebuffer \n"
-        "mode and be able to display 640x480 @ 8bpp.");
-    return 1;
-  }
-  BLOCK b;
-  square1 = &b;
+  // if (err != OK) {
+  //   printf(
+  //       "ERROR: Your video card must be VESA 2.0, have linear framebuffer \n"
+  //       "mode and be able to display 640x480 @ 8bpp.");
+  //   return 1;
+  // }
+  // BLOCK b;
+  // square1 = &b;
 
-  if (bitmap_load("test.bmp", square1) != OK) {
-    printf("ERROR: Can't load bitmap.");
-  }
+  // if (bitmap_load("test.bmp", square1) != OK) {
+  //   printf("ERROR: Can't load bitmap.");
+  // }
 
   loop_run(&update, &render, 60);
-  video_close(screen);
+  // video_close(screen);
 
-  block_free(square1);
+  // block_free(square1);
   printf("Exiting sanely.\n");
   return 0;
 }
