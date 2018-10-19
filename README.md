@@ -26,13 +26,13 @@ The following instructions assume you're doing your development on a modern (as 
 1. Unpack the DJGPP archives 
 
 1. Assuming DOSBox is installed, edit your config file. This will generally be in ` $HOME\AppData\Local\DOSBox` and be named something like `dosbox-xx.conf`. Add the following lines to the end of the file in the `[autoexec]` section. 
-    
+    ```
     MOUNT C C:\dosdrives\drive_c
     MOUNT F . -t floppy
     SET PATH=C:\DJGPP\BIN;%PATH
     SET DJGPP=C:\DJGPP\DJGPP.ENV
     F:
-
+    ```
 1. `build.bat` and `run.bat` are batch files intended to run on modern Windows. They launch DOSBox and supply it with the commands to build/run the test program. If you're using Linux or OSX you'll probably need to create a shell script that does the same thing. It should be almost identical to the batch file, as the commands are all run _inside_ DOSBox. Both batch files assume you have the DOSBox executable in your path.
 
 1. Run `build.bat` from your host operating system. You should see DOSBox open, build the test application and then run it. To run the test application with [DOS94](http://dos94.com) settings, use `run.bat`
