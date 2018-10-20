@@ -32,69 +32,117 @@
 #include "../include/bitmap.h"
 #include "../include/block.h"
 #include "../include/draw.h"
-#include "../include/input.h"
+#include "../include/keyboard.h"
 #include "../include/loop.h"
 #include "../include/types.h"
 #include "../include/video.h"
 
-int x, y, key;
+#define SPEED 1
+
+typedef struct {
+  BLOCK *sprite;
+  int x, y;
+  int x_direction, y_direction;
+} PLAYER;
+
 SCREEN *screen;
-BLOCK *square1;
+PLAYER *player;
+int k;
 
 bool update() {
-  key = input_get_key();
-  if (key != -1) {
-    printf("Key is 0x%04x\n", key);
-  }
-  if (key == KEY_ESC) {
-    return true;
-  }
-  if (key == KEY_A || key == KEY_SHIFT_A) {
-    printf("Key was A\n");
-  }
-  // if (x + square1->width < screen->width) {
-  //   x++;
-  // } else {
-  //   x = 0;
-  // }
-  // if (y + square1->height < screen->height) {
-  //   y++;
-  // } else {
-  //   y = 0;
-  // }
+  bool exit_now = false;
 
-  return false;
+  if (keyboard_key_down(KEY_UP)) {
+    player->y_direction = -SPEED;
+    player->x_direction = 0;
+  } else if (keyboard_key_down(KEY_DOWN)) {
+    player->y_direction = SPEED;
+    player->x_direction = 0;
+  } else if (keyboard_key_down(KEY_LEFT)) {
+    player->x_direction = -SPEED;
+    player->y_direction = 0;
+  } else if (keyboard_key_down(KEY_RIGHT)) {
+    player->x_direction = SPEED;
+    player->y_direction = 0;
+  } else {
+    player->x_direction = 0;
+    player->y_direction = 0;
+  }
+
+  if (keyboard_key_down(KEY_ESC)) {
+    exit_now = true;
+  }
+
+  // move
+  player->x += player->x_direction;
+  player->y += player->y_direction;
+
+  // check for bouncing
+  if (player->x < 0) {
+    player->x = 0;
+    player->x_direction = -player->x_direction;  // move in other direction
+  } else {
+    if (player->x > screen->width - player->sprite->width) {
+      player->x = screen->width - player->sprite->width;
+      player->x_direction = -player->x_direction;  // move in other direction
+    }
+  }
+  if (player->y < 0) {
+    player->y = 0;
+    player->y_direction = -player->y_direction;  // move in other direction
+  } else {
+    if (player->y > screen->height - player->sprite->height) {
+      player->y = screen->height - player->sprite->height;
+      player->y_direction = -player->y_direction;  // move in other direction
+    }
+  }
+
+  return exit_now;
 }
 
 void render() {
-  // video_clear_buffer(screen);
-  // block_copy_to_screen(screen, square1, x, y);
-  // video_update_screen(screen);
+  video_clear_buffer(screen);
+  block_copy_to_screen(screen, player->sprite, player->x, player->y);
+  video_update_screen(screen);
 }
 
 int main(void) {
-  // SCREEN s;
-  // screen = &s;
+  SCREEN s;
+  screen = &s;
 
-  // int err = video_open(screen, MODE_640x480x8);
+  int err = video_open(screen, MODE_640x480x8);
 
-  // if (err != OK) {
-  //   printf(
-  //       "ERROR: Your video card must be VESA 2.0, have linear framebuffer \n"
-  //       "mode and be able to display 640x480 @ 8bpp.");
-  //   return 1;
-  // }
-  // BLOCK b;
-  // square1 = &b;
+  if (err != OK) {
+    printf(
+        "ERROR: Your video card must be VESA 2.0, have linear framebuffer \n"
+        "mode and be able to display 640x480 @ 8bpp.");
+    return 1;
+  }
 
-  // if (bitmap_load("test.bmp", square1) != OK) {
-  //   printf("ERROR: Can't load bitmap.");
-  // }
+  if (keyboard_init() != OK) {
+    printf("ERROR: Could not install keyboard handler.\n");
+    return 1;
+  }
+
+  keyboard_chain(OFF);
+
+  BLOCK b;
+  PLAYER p;
+  player = &p;
+  player->sprite = &b;
+
+  if (bitmap_load("test.bmp", player->sprite) != OK) {
+    printf("ERROR: Can't load test.bmp");
+  }
 
   loop_run(&update, &render, 60);
-  // video_close(screen);
+  video_close(screen);
 
-  // block_free(square1);
+  block_free(player->sprite);
+
+  keyboard_chain(ON);
+  keyboard_close();
+
   printf("Exiting sanely.\n");
   return 0;
 }

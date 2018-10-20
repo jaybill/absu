@@ -12,8 +12,8 @@ test.exe: test\test.c
 	src\block.c \
 	src\bitmap.c \
 	src\draw.c \
-	src\input.c \
 	src\loop.c \
+	src\keyboard.s \
 	src\video.c 
 
 clean:

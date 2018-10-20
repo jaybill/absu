@@ -45,6 +45,9 @@ You could also build it as a static library and link it to your program, but doi
 ### Building as a shared library
 DJGPP can't do that.
 
+## Documentation
+API documentation can be built with [Doxygen](http://www.stack.nl/~dimitri/doxygen/index.html). The code is all commented and there's a `Doxyfile` in the root of the project. A bunch of tutorials are in the works.
+
 ## What's with the name?
 It's short for "Absolute Unit". It's in no way associated with the black metal band [Absu](http://absu.us). I didn't actually know about them until after I named the library, but I have since become a fan.
 
