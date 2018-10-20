@@ -53,7 +53,6 @@ extern void keyboard_chain(int toggle);
  * test if a key is down. Can be used to test multiple keys at the same time.*/
 #define keyboard_key_down(scan) ((int)keyboard_map[(scan)])
 
-/** @brief Constants for keyboard scan-codes */
 #define KEY_ESC 0x01
 #define KEY_1 0x02
 #define KEY_2 0x03
