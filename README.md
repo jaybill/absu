@@ -1,10 +1,39 @@
 # absU Game Library
 
 ## What?
-absU is a library for writing games in C (or assembly language) that run on [DOSBox](https://dosbox.com) or Intel 80386 (or later) and 100% compatible based PCs running DOS (either [FreeDOS](http://www.freedos.org/) or [MS DOS](https://en.wikipedia.org/wiki/MS-DOS) ). It aims to provide graphics, drawing primitives, sprites, tile maps, collision detection, input (keyboard/mouse/gamepad) handling, sound and a bunch of useful utilities. The library and programs that use it can currently only be compiled with [DJGPP](http://www.delorie.com/djgpp/), but [OpenWatcom](http://openwatcom.org/) will eventually be supported as well. It has no dependencies.
+absU is a library for writing games in C that run on [DOSBox](https://dosbox.com). It aims to provide graphics, drawing primitives, sprites, tile maps, collision detection, input (keyboard/mouse/gamepad) handling, sound and a bunch of useful utilities. The library and programs that use it can currently only be compiled with [DJGPP](http://www.delorie.com/djgpp/), but [OpenWatcom](http://openwatcom.org/) will eventually be supported as well. It has no dependencies.
+
+## Status
+absU is in the very early stages of development, but a lot of things work. Here's a list. Anything crossed out is functional:
+* Graphics
+    * ~~VBE 2.0~~
+    * ~~SVGA~~
+    * ~~Screen buffering~~
+    * ~~"blocks" for drawing and bitmap loading~~
+    * ~~sprites~~
+    * tiles
+    * animation
+    * scrolling/parallax
+* Drawing
+    * ~~pixels~~
+    * ~~horizontal/vertical lines~~
+    * ~~filled/empty rectangles~~
+    * circles and arcs
+* ~~Bitmap loading (BMP files)~~
+* Input handling
+    * ~~keyboard~~
+    * mouse
+    * gamepad
+* Sound
+* MIDI
+* Collision detection
+* Simple 2D physics
+
 
 ## Installation
-The following instructions assume you're doing your development on a modern (as of 2018) computer running a recent version of Windows, OSX or Linux but that you'll actually compile your code [DOSBox](https://www.dosbox.com/). Currently these instructions pertain specifically to Windows 10, but they should be broadly applicable to whatever OS you're using with pretty minor tweaking. While I'm certain you could get the tools and all working using DJGPP's cross compiler, you're on your own setting that up. There's a project called [build-djgpp](https://github.com/andrewwutw/build-djgpp) that can help with this, but as of this writing it only supports up to version 7.2.0 of DJGPP and it hasn't been updated for a year. You could, of course, do all of this on an actual 386 or 486 PC running DOS if that's your thing. Most of this will still apply.
+The following instructions assume you're doing your development on a modern (as of 2018) computer running a recent version of Windows, OSX or Linux but that you'll actually compile your code [DOSBox](https://www.dosbox.com/). Currently these instructions pertain specifically to Windows 10, but they should be broadly applicable to whatever OS you're using with pretty minor tweaking. While I'm certain you could get the tools and all working using DJGPP's cross compiler, you're on your own setting that up. There's a project called [build-djgpp](https://github.com/andrewwutw/build-djgpp) that can help with this, but as of this writing it only supports up to version 7.2.0 of DJGPP and it hasn't been updated for a year. 
+
+**NOTE:** absU targets the _DOSBox_ emulator, not physical computers. Old PC hardware is becoming increasingly rare and fragile. If you want to fight collectors for "vintage hardware" on eBay so you can get it home and spend your weekend resolving IRQ conflicts, then hey, go for it. It would probably work fine on an actual 386 or 486 PC running DOS. I haven't tested it, don't plan to and have no plans to support anything that isn't DOSBox.
 
 ### Prerequisites
 * [DOSBox](https://www.dosbox.com/)
@@ -50,6 +79,9 @@ API documentation can be built with [Doxygen](http://www.stack.nl/~dimitri/doxyg
 
 ## What's with the name?
 It's short for "Absolute Unit". It's in no way associated with the black metal band [Absu](http://absu.us). I didn't actually know about them until after I named the library, but I have since become a fan.
+
+## Acknowledgements
+See [THANKS.md](THANKS.md) in the root of this repo.
 
 ## License
 
