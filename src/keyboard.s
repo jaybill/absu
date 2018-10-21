@@ -18,7 +18,7 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
  
-# Adapted from examples written by Martynas Kunigelis in 1996
+# Adapted from public domain examples written by Martynas Kunigelis in 1996
  
 		.file	"keyboard.s"
  #

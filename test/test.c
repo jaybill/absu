@@ -23,9 +23,9 @@
 
 /* test.c */
 
-#include <conio.h>
-#include <limits.h>
-#include <math.h>
+//#include <conio.h>
+//#include <limits.h>
+//#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -38,11 +38,13 @@
 #include "../include/video.h"
 
 #define SPEED 1
+#define MAX_TICKS_UNTIL_MOVE 2
 
 typedef struct {
   BLOCK *sprite;
   int x, y;
   int x_direction, y_direction;
+  int ticks_since_move;
 } PLAYER;
 
 SCREEN *screen;
@@ -51,52 +53,55 @@ int k;
 
 bool update() {
   bool exit_now = false;
-
-  if (keyboard_key_down(KEY_UP)) {
-    player->y_direction = -SPEED;
-    player->x_direction = 0;
-  } else if (keyboard_key_down(KEY_DOWN)) {
-    player->y_direction = SPEED;
-    player->x_direction = 0;
-  } else if (keyboard_key_down(KEY_LEFT)) {
-    player->x_direction = -SPEED;
-    player->y_direction = 0;
-  } else if (keyboard_key_down(KEY_RIGHT)) {
-    player->x_direction = SPEED;
-    player->y_direction = 0;
+  if (player->ticks_since_move < MAX_TICKS_UNTIL_MOVE) {
+    player->ticks_since_move++;
   } else {
-    player->x_direction = 0;
-    player->y_direction = 0;
-  }
+    player->ticks_since_move = 0;
+    if (keyboard_key_down(KEY_UP)) {
+      player->y_direction = -SPEED;
+      player->x_direction = 0;
+    } else if (keyboard_key_down(KEY_DOWN)) {
+      player->y_direction = SPEED;
+      player->x_direction = 0;
+    } else if (keyboard_key_down(KEY_LEFT)) {
+      player->x_direction = -SPEED;
+      player->y_direction = 0;
+    } else if (keyboard_key_down(KEY_RIGHT)) {
+      player->x_direction = SPEED;
+      player->y_direction = 0;
+    } else {
+      player->x_direction = 0;
+      player->y_direction = 0;
+    }
 
-  if (keyboard_key_down(KEY_ESC)) {
-    exit_now = true;
-  }
+    if (keyboard_key_down(KEY_ESC)) {
+      exit_now = true;
+    }
 
-  // move
-  player->x += player->x_direction;
-  player->y += player->y_direction;
+    // move
+    player->x += player->x_direction;
+    player->y += player->y_direction;
 
-  // check for bouncing
-  if (player->x < 0) {
-    player->x = 0;
-    player->x_direction = -player->x_direction;  // move in other direction
-  } else {
-    if (player->x > screen->width - player->sprite->width) {
-      player->x = screen->width - player->sprite->width;
+    // check for bouncing
+    if (player->x < 0) {
+      player->x = 0;
       player->x_direction = -player->x_direction;  // move in other direction
+    } else {
+      if (player->x > screen->width - player->sprite->width) {
+        player->x = screen->width - player->sprite->width;
+        player->x_direction = -player->x_direction;  // move in other direction
+      }
     }
-  }
-  if (player->y < 0) {
-    player->y = 0;
-    player->y_direction = -player->y_direction;  // move in other direction
-  } else {
-    if (player->y > screen->height - player->sprite->height) {
-      player->y = screen->height - player->sprite->height;
+    if (player->y < 0) {
+      player->y = 0;
       player->y_direction = -player->y_direction;  // move in other direction
+    } else {
+      if (player->y > screen->height - player->sprite->height) {
+        player->y = screen->height - player->sprite->height;
+        player->y_direction = -player->y_direction;  // move in other direction
+      }
     }
   }
-
   return exit_now;
 }
 
@@ -130,6 +135,7 @@ int main(void) {
   PLAYER p;
   player = &p;
   player->sprite = &b;
+  player->ticks_since_move = 0;
 
   if (bitmap_load("test.bmp", player->sprite) != OK) {
     printf("ERROR: Can't load test.bmp");

@@ -20,6 +20,9 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+/* Inclides code adapted from public domain examples written by Charles Sandmann
+ * in 1995 */
+
 /** @file video.c */
 
 #include "../include/video.h"
