@@ -124,12 +124,18 @@ int main(void) {
     return 1;
   }
 
-  if (keyboard_init() != OK) {
+  if (keyboard_open() != OK) {
     printf("ERROR: Could not install keyboard handler.\n");
     return 1;
   }
 
   keyboard_chain(OFF);
+
+  // if(!sound_open() == OK){
+  //   printf("ERROR: Could not initialize sound card.");
+  //   return 1;
+  // }
+
 
   BLOCK b;
   PLAYER p;

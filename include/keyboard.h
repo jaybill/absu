@@ -34,7 +34,7 @@
 extern volatile char keyboard_map[128];
 
 /** @brief Installs keyboard handler. Returns OK on success or -1 on failure.*/
-extern int keyboard_init(void);
+extern int keyboard_open(void);
 /** @brief Removes keyboard handler. */
 extern void keyboard_close(void);
 /** @brief Makes the handler chain to previous keyboard routine if called ON.

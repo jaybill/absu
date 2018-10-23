@@ -4,6 +4,7 @@ compile.txt
 std???.txt
 *.log
 *.o
+*.O
 dist
 bin
 lib

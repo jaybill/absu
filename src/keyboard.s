@@ -31,7 +31,7 @@
  # public functions and variables:
  #
 		.global _keyboard_map
-		.global _keyboard_init
+		.global _keyboard_open
 		.global _keyboard_close
 		.global _keyboard_chain
 
@@ -105,10 +105,10 @@ locking_region_end:
 
 
 		.align	4
-_keyboard_init:
+_keyboard_open:
 
  #
- # int keyboard_init(void);
+ # int keyboard_open(void);
  #
  # Initializes the keyboard handler and hooks the keyboard interrupt.
  # Returns -1 on failure, zero on success
