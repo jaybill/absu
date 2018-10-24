@@ -24,11 +24,15 @@ absU is in the very early stages of development, but a lot of things work. Here'
     * ~~keyboard~~
     * mouse
     * gamepad
-* Sound
-* MIDI
+* ~~Sound~~ (see below)
 * Collision detection
 * Simple 2D physics
 
+### Sound
+
+Sound is a complex beast. Simple PC speaker sound is pretty straightforward, but the SB16 I want to support in DOSBox is a whole different animal. I _could_ spend the time parsing out how that card works in enough detail to make my own driver, but research has shown this to be prohibitively complicated to the point where I've decided to skip it for the moment. Don't worry, though, I've provided everyone's favorite free, Satan-themed and somewhat orphaned sound library, [Judas](https://github.com/volkertb/JUDAS)! It's in the `vendor/JDAS209F` folder. What's included is the last non-GPL'd version, [2.09F](https://github.com/volkertb/JUDAS/blob/master/LICENSE.md), which is free to include in your project without having to supply your source code or your object files to the end user. I've shown how to compile and use it in the test program. If there's enough interest, I'll eventually add sound natively within the library. 
+
+I should add that Judas is _by far_ the best solution I could find for sound in DOS games short of licensing the SDK from Creative, which I'm not even sure is possible anymore. I spent a literal week digging around for working example code or an existing library with some kind of permissive, BSD-style licensing and came up dry. This version of Judas is the closest I could get. It's a very nice library, and the version I've supplied is legally unencumbered and can safely be used in commercial projects. 
 
 ## Installation
 The following instructions assume you're doing your development on a modern (as of 2018) computer running a recent version of Windows, OSX or Linux but that you'll actually compile your code inside of [DOSBox](https://www.dosbox.com/). Currently these instructions pertain specifically to Windows 10, but they should be broadly applicable to whatever OS you're using with pretty minor tweaking. While I'm certain you could get the tools and all working using DJGPP's cross compiler, you're on your own setting that up. There's a project called [build-djgpp](https://github.com/andrewwutw/build-djgpp) that can help with this, but as of this writing it only supports up to version 7.2.0 of DJGPP and it hasn't been updated for a year. 
