@@ -36,23 +36,35 @@
 #include "../include/loop.h"
 #include "../include/types.h"
 #include "../include/video.h"
+#include "JUDAS.H"
 
-#define SPEED 1
-#define MAX_TICKS_UNTIL_MOVE 2
+#define SPEED 5
+#define MAX_TICKS_UNTIL_MOVE 0
+#define MAX_TICKS_UNTIL_FIRE 10
 
 typedef struct {
   BLOCK *sprite;
   int x, y;
   int x_direction, y_direction;
   int ticks_since_move;
+  int ticks_since_fire;
 } PLAYER;
 
 SCREEN *screen;
 PLAYER *player;
+SAMPLE *plrshoot;
 int k;
 
 bool update() {
   bool exit_now = false;
+  if (player->ticks_since_fire < MAX_TICKS_UNTIL_FIRE) {
+    player->ticks_since_fire++;
+  } else {
+    player->ticks_since_fire = 0;
+    if (keyboard_key_down(KEY_SPACE)) {
+      judas_playsample(plrshoot, 4, 22050, 64 * 256, MIDDLE);
+    }
+  }
   if (player->ticks_since_move < MAX_TICKS_UNTIL_MOVE) {
     player->ticks_since_move++;
   } else {
@@ -102,6 +114,7 @@ bool update() {
       }
     }
   }
+  judas_update();
   return exit_now;
 }
 
@@ -115,8 +128,21 @@ int main(void) {
   SCREEN s;
   screen = &s;
 
-  int err = video_open(screen, MODE_640x480x8);
+  if (keyboard_open() != OK) {
+    printf("ERROR: Could not install keyboard handler.\n");
+    return 1;
+  }
+  keyboard_chain(OFF);
 
+  judas_config();
+  if (!judas_init(44100, QUALITYMIXER, SIXTEENBIT | STEREO, 1)) {
+    printf("ERROR: Could not initialize sound card.");
+    return 1;
+  }
+
+  plrshoot = judas_loadwav("PLRSHOOT.WAV");
+
+  int err = video_open(screen, MODE_640x480x8);
   if (err != OK) {
     printf(
         "ERROR: Your video card must be VESA 2.0, have linear framebuffer \n"
@@ -124,30 +150,19 @@ int main(void) {
     return 1;
   }
 
-  if (keyboard_open() != OK) {
-    printf("ERROR: Could not install keyboard handler.\n");
-    return 1;
-  }
-
-  keyboard_chain(OFF);
-
-  // if(!sound_open() == OK){
-  //   printf("ERROR: Could not initialize sound card.");
-  //   return 1;
-  // }
-
-
   BLOCK b;
   PLAYER p;
   player = &p;
   player->sprite = &b;
   player->ticks_since_move = 0;
+  player->ticks_since_fire = 0;
 
   if (bitmap_load("test.bmp", player->sprite) != OK) {
     printf("ERROR: Can't load test.bmp");
   }
 
   loop_run(&update, &render, 60);
+
   video_close(screen);
 
   block_free(player->sprite);
@@ -155,6 +170,8 @@ int main(void) {
   keyboard_chain(ON);
   keyboard_close();
 
+  judas_uninit();
   printf("Exiting sanely.\n");
+
   return 0;
 }

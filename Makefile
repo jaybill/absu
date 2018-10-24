@@ -1,7 +1,8 @@
 
 CC = gcc
-FLAGS = -Wall -g -Ivendor\sb05_dj2
-LDFLAGS = -Lvendor\sb05_dj2 -lsb
+FLAGS = -Wall -g -Ivendor\JDAS209F
+
+LIBS = vendor\JDAS209F\judaslib.a
 
 all: test.exe testdata
 
@@ -15,7 +16,7 @@ test.exe: test\test.c
 	src\draw.c \
 	src\loop.c \
 	src\keyboard.s \
-	src\video.c 
+	src\video.c
 
 	$(CC) $(FLAGS) test.o \
 	block.o \
@@ -24,7 +25,8 @@ test.exe: test\test.c
 	loop.o \
 	keyboard.o \
 	video.o \
-	-o bin\test.exe $(LDFLAGS)
+	$(LIBS) \
+	-o bin\test.exe
 
 
 clean:
@@ -36,3 +38,4 @@ clean:
 
 testdata:
 	copy test\test.bmp bin
+	copy vendor\JDAS209F\*.WAV bin
