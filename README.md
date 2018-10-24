@@ -65,7 +65,7 @@ The following instructions assume you're doing your development on a modern (as 
 1. Run `build.bat` from your host operating system. You should see DOSBox open, build the test application and then run it. To run the test application with [DOS94](http://dos94.com) settings, use `run.bat`
 
 ### Building as part of your project
-You couldn't just create a `deps/absu` folder in your project, drop the `src` and `include` directories from this repo into it and then compile everything as part of your application. You can easily adapt the `Makefile`, `run.bat` and `build.bat` to your build process.
+You could just create a `deps/absu` folder in your project, drop the `src` and `include` directories from this repo into it and then compile everything as part of your application. You can easily adapt the `Makefile`, `run.bat` and `build.bat` to your build process.
 
 You could also build it as a static library and link it to your program, but doing so is outside the scope of this document.
 
