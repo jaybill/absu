@@ -1,33 +1,38 @@
 
 CC = gcc
-FLAGS = -Wall -g -Ivendor\JDAS209F
+AR = ar
+RANLIB = ranlib
+CFLAGS = -Wall -g 
+SRC = src
 
-LIBS = vendor\JDAS209F\judaslib.a
-
-all: test.exe testdata
-
-.PHONY: testdata
-
-test.exe: test\test.c
-	$(CC) $(FLAGS) -c \
-	test\test.c \
-	src\block.c \
-	src\bitmap.c \
-	src\draw.c \
-	src\loop.c \
-	src\keyboard.s \
-	src\video.c
-
-	$(CC) $(FLAGS) test.o \
-	block.o \
+LIB = lib\libabsu.a
+OBJS = block.o \
 	bitmap.o \
 	draw.o \
 	loop.o \
 	keyboard.o \
-	video.o \
-	$(LIBS) \
-	-o bin\test.exe
+	video.o
 
+all: $(LIB) bin\test.exe testdata
+
+lib: $(LIB)
+
+.PHONY: testdata clean lib
+
+%.o: $(SRC)\%.s
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+%.o: $(SRC)\%.c
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+$(LIB): $(OBJS)
+	$(AR) rc $(LIB) $(OBJS)
+	$(RANLIB) $(LIB)
+
+bin\test.exe: $(OBJS)
+	$(CC) -Wall -g -Ivendor\JDAS209F test\test.c $(OBJS) \
+	vendor\JDAS209F\judaslib.a \
+	-o bin\test.exe
 
 clean:
 	del src\*.o
