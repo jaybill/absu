@@ -62,7 +62,7 @@ int bitmap_load(char *file, BLOCK *b) {
 
   // assume we are working with an 8-bit file
   if (num_colors == 0) num_colors = 256;
-  printf("BMP size: %d,%d\n", width, height);
+
   /* try to allocate memory */
   if (block_init(b, width, height) != OK) {
     fclose(fp);
