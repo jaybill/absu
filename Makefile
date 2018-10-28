@@ -42,5 +42,5 @@ clean:
 	del *.o
 
 testdata:
-	copy test\test.bmp bin
+	copy test\mole.bmp bin
 	copy vendor\JDAS209F\*.WAV bin

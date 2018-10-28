@@ -49,3 +49,16 @@ void block_copy_to_screen(SCREEN *screen, BLOCK *block, int x, int y) {
            sizeof(block->buffer[0]) * block->width);
   }
 }
+
+void block_copy_to_block(BLOCK *src, BLOCK *dst, int src_x, int src_y,
+                         int src_w, int src_h, int dst_x, int dst_y) {
+  // printf("src_x %d src_y %d src_w %d src_h %d dst_x %d dst_y %d\n", src_x,
+  //  src_y, src_w, src_h, dst_x, dst_y);
+ 
+ 
+  for (size_t i = src_y; i < src_h; i++) {
+    memcpy(&dst->buffer[dst_x + (dst->width * (dst_y + i))],
+           &src->buffer[i * src->width], 
+           sizeof(src->buffer[0]) * src_w);
+  }
+}
