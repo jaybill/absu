@@ -27,6 +27,7 @@
 #ifndef ABSU_BITMAP_H
 #define ABSU_BITMAP_H
 
+#include <stdbool.h>
 #include "block.h"
 #include "types.h"
 
@@ -39,6 +40,6 @@
  * NOTE: If you create a BLOCK with this, you must call @block_free on it when
  * you're done to free the buffer memory.
  */
-int bitmap_load(char *file, BLOCK *b);
+int bitmap_load(char *file, BLOCK *b,bool transparent);
 
 #endif  // !ABSU_BITMAP_H

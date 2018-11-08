@@ -25,6 +25,7 @@
 #include "../include/bitmap.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "../include/types.h"
 
@@ -33,7 +34,7 @@ void fskip(FILE *fp, int num_bytes) {
   for (i = 0; i < num_bytes; i++) fgetc(fp);
 }
 
-int bitmap_load(char *file, BLOCK *b) {
+int bitmap_load(char *file, BLOCK *b, bool transparent) {
   FILE *fp;
   long index;
   WORD num_colors, width, height;
@@ -64,7 +65,8 @@ int bitmap_load(char *file, BLOCK *b) {
   if (num_colors == 0) num_colors = 256;
 
   /* try to allocate memory */
-  if (block_init(b, width, height) != OK) {
+  if (block_init(b, width, height,
+                 transparent ? BLOCK_TYPE_RLE : BLOCK_TYPE_NORMAL) != OK) {
     fclose(fp);
     return ERR_CANT_ALLOCATE_MEMORY;
   }
@@ -82,13 +84,83 @@ int bitmap_load(char *file, BLOCK *b) {
     p++;
   }
 
-  // read the bitmap
   for (index = (b->height - 1) * b->width; index >= 0; index -= b->width) {
     for (x = 0; x < b->width; x++) {
       b->buffer[(WORD)index + x] = (BYTE)fgetc(fp);
     }
   }
   fclose(fp);
+  if (b->block_type == BLOCK_TYPE_RLE) {
+    BYTE *tmp_bitmap = (BYTE *)malloc(b->bufsize);
+    memcpy(tmp_bitmap, b->buffer, b->bufsize);
 
+    for (int i = 0; i < b->bufsize; i++) {
+      if (i > 0 && i % b->width == 0) printf("\n");
+      printf("%02x ", b->buffer[i]);
+    }
+    bzero(b->buffer, b->bufsize);
+
+    int current_byte = 0;
+    int out_bytes = 0;
+    int current_row_bytes = 0;
+    while (current_byte < b->bufsize) {
+      if (tmp_bitmap[current_byte] == 0x00) {
+        b->buffer[out_bytes++] = 0x00;
+        int still_zero = true;
+        int zeroes = 0;
+        while (still_zero) {
+          if (current_row_bytes < b->width) {
+            if (tmp_bitmap[current_byte] == 0x00) {
+              zeroes++;
+              current_byte++;
+              current_row_bytes++;
+            } else {
+              still_zero = false;
+            }
+          } else {
+            current_row_bytes = 0;
+            still_zero = false;
+          }
+        }
+        // TODO - Will need to account for what happens if there are more than
+        // 256 (or bytes) zeroes in a row
+        b->buffer[out_bytes++] = zeroes;
+      } else {
+        b->buffer[out_bytes++] = 0x01;
+        int start_byte = current_byte;
+
+        bool still_not_zero = true;
+        int filled = 0;
+        while (still_not_zero) {
+          if (current_row_bytes < b->width) {
+            if (tmp_bitmap[current_byte] != 0x00) {
+              filled++;
+              current_byte++;
+              current_row_bytes++;
+            } else {
+              still_not_zero = false;
+            }
+          } else {
+            still_not_zero = false;
+            current_row_bytes = 0;
+          }
+        }
+        b->buffer[out_bytes++] = filled;
+        memcpy(&b->buffer[out_bytes++], &tmp_bitmap[start_byte], filled);
+        out_bytes = out_bytes + filled - 1;
+      }
+    }
+
+    printf("\nRLE Encoded:\n");
+
+    int out_count = 0;
+    while (out_count < b->bufsize) {
+      printf("%02x ", b->buffer[out_count]);
+      out_count++;
+    }
+
+    printf("\n\n");
+    free(tmp_bitmap);
+  }
   return OK;
 }

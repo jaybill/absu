@@ -27,8 +27,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-int block_init(BLOCK *block, int width, int height) {
-  block->bufsize = width * height * sizeof(BYTE);
+int block_init(BLOCK *block, int width, int height, int block_type) {
+  block->block_type = block_type;
+
+  block->bufsize =
+      width * height *
+      sizeof(BYTE);  // TODO: This should account for RLE, but doesn't.
   block->buffer = (BYTE *)malloc(block->bufsize);
   if (block->buffer == NULL) {
     return ERR_CANT_ALLOCATE_MEMORY;
@@ -36,17 +40,44 @@ int block_init(BLOCK *block, int width, int height) {
   bzero(block->buffer, block->bufsize);
   block->width = width;
   block->height = height;
+
   return OK;
 }
 
 void block_free(BLOCK *block) { free(block->buffer); }
 
 void block_copy_to_screen(SCREEN *screen, BLOCK *block, int x, int y) {
-  // loop through lines of block - copy entire line
-  for (size_t i = 0; i < block->height; i++) {
-    memcpy(&screen->buffer[x + (screen->width * (y + i))],
-           &block->buffer[i * block->width],
-           sizeof(block->buffer[0]) * block->width);
+  if (block->block_type == BLOCK_TYPE_RLE) {
+    int current_block_byte = 0;
+    for (size_t i = 0; i < block->height; i++) {
+      int current_line_byte = 0;
+      while(current_line_byte < block->width){
+        if(block->buffer[current_block_byte] == 0x00 ){
+          current_block_byte++;
+          current_line_byte = current_line_byte + block->buffer[current_block_byte];
+        } else {
+          current_block_byte++;
+          int bytes_to_copy = block->buffer[current_line_byte];
+          current_block_byte++;
+          int start_pos = current_block_byte;
+          memcpy(&screen->buffer[x + (screen->width * (y + i))],
+             &block->buffer[start_pos],
+            bytes_to_copy);
+            current_block_byte = current_block_byte + bytes_to_copy;
+            current_line_byte = current_line_byte + bytes_to_copy;
+        }
+      }
+     
+    
+    }
+
+  } else {
+    // loop through lines of block - copy entire line
+    for (size_t i = 0; i < block->height; i++) {
+      memcpy(&screen->buffer[x + (screen->width * (y + i))],
+             &block->buffer[i * block->width],
+             sizeof(block->buffer[0]) * block->width);
+    }
   }
 }
 
@@ -54,7 +85,7 @@ void block_copy_to_block(BLOCK *src, BLOCK *dst, int src_x, int src_y,
                          int src_w, int src_h, int dst_x, int dst_y) {
   for (size_t i = 0; i < src_h; i++) {
     int src_start = ((i + src_y) * src->width) + src_x;
-    int dst_start = ((i + dst_y) * dst->width) + dst_x;    
+    int dst_start = ((i + dst_y) * dst->width) + dst_x;
     memcpy(&dst->buffer[dst_start], &src->buffer[src_start],
            sizeof(BYTE) * src_w);
   }

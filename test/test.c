@@ -157,7 +157,7 @@ int main(void) {
   player->ticks_since_move = 0;
   player->ticks_since_fire = 0;
 
-  if (bitmap_load("test.bmp", player->sprite) != OK) {
+  if (bitmap_load("test.bmp", player->sprite, false) != OK) {
     printf("ERROR: Can't load test.bmp");
   }
 

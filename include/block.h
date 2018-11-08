@@ -37,9 +37,13 @@
 typedef struct {
   int width, height, bufsize;
   BYTE *buffer;
+  int block_type;
 } BLOCK;
 
-int block_init(BLOCK *block, int width, int height);
+#define BLOCK_TYPE_NORMAL 1
+#define BLOCK_TYPE_RLE 2
+
+int block_init(BLOCK *block, int width, int height, int block_type);
 void block_free(BLOCK *block);
 void block_copy_to_screen(SCREEN *screen, BLOCK *block, int x, int y);
 void block_copy_to_block(BLOCK *src, BLOCK *dst, int src_x, int src_y,
