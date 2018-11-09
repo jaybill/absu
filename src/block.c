@@ -23,9 +23,12 @@
 /** @file block.c */
 
 #include "../include/block.h"
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+static bool once;
 
 int block_init(BLOCK *block, int width, int height, int block_type) {
   block->block_type = block_type;
@@ -50,27 +53,38 @@ void block_copy_to_screen(SCREEN *screen, BLOCK *block, int x, int y) {
   if (block->block_type == BLOCK_TYPE_RLE) {
     int current_block_byte = 0;
     for (size_t i = 0; i < block->height; i++) {
+      if (!once) printf("\nLine: %d\n", i);
+
       int current_line_byte = 0;
-      while(current_line_byte < block->width){
-        if(block->buffer[current_block_byte] == 0x00 ){
+      int skip_bytes;
+      while (current_line_byte < block->width &&
+             current_block_byte < block->bufsize) {
+        if (block->buffer[current_block_byte] == 0x00) {
           current_block_byte++;
-          current_line_byte = current_line_byte + block->buffer[current_block_byte];
+          skip_bytes = block->buffer[current_block_byte];
+          current_line_byte = current_line_byte + skip_bytes;
+          if (!once) printf("s %02d\t", skip_bytes);
+          current_block_byte++;
         } else {
           current_block_byte++;
-          int bytes_to_copy = block->buffer[current_line_byte];
+          int write_bytes = block->buffer[current_block_byte];
           current_block_byte++;
-          int start_pos = current_block_byte;
-          memcpy(&screen->buffer[x + (screen->width * (y + i))],
-             &block->buffer[start_pos],
-            bytes_to_copy);
-            current_block_byte = current_block_byte + bytes_to_copy;
-            current_line_byte = current_line_byte + bytes_to_copy;
+          int start_byte = current_block_byte;
+          current_line_byte = current_line_byte + write_bytes;
+          current_block_byte = current_block_byte + write_bytes;
+
+          if (!once) printf("w %02d\t", write_bytes);
+
+          memcpy(
+              &screen
+                   ->buffer[x + current_line_byte + (screen->width * (y + i))],
+              &block->buffer[start_byte], write_bytes);
+          
         }
       }
-     
-    
+      if (!once) printf("\n");
     }
-
+    once = true;
   } else {
     // loop through lines of block - copy entire line
     for (size_t i = 0; i < block->height; i++) {
