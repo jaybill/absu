@@ -53,10 +53,10 @@ void block_copy_to_screen(SCREEN *screen, BLOCK *block, int x, int y) {
   if (block->block_type == BLOCK_TYPE_RLE) {
     int current_block_byte = 0;
     for (size_t i = 0; i < block->height; i++) {
-      if (!once) printf("\nLine: %d\n", i);
+      if (!once) printf("\nLine: %ld\n", i);
 
       int current_line_byte = 0;
-      int skip_bytes;
+      int skip_bytes = 0;
       while (current_line_byte < block->width &&
              current_block_byte < block->bufsize) {
         if (block->buffer[current_block_byte] == 0x00) {
@@ -77,8 +77,9 @@ void block_copy_to_screen(SCREEN *screen, BLOCK *block, int x, int y) {
 
           memcpy(
               &screen
-                   ->buffer[x + current_line_byte + (screen->width * (y + i))],
+                   ->buffer[x + skip_bytes + (screen->width * (y + i))],
               &block->buffer[start_byte], write_bytes);
+              
           
         }
       }
