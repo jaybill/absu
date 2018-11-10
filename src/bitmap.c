@@ -94,10 +94,10 @@ int bitmap_load(char *file, BLOCK *b, bool transparent) {
     BYTE *tmp_bitmap = (BYTE *)malloc(b->bufsize);
     memcpy(tmp_bitmap, b->buffer, b->bufsize);
 
-    for (int i = 0; i < b->bufsize; i++) {
-      if (i > 0 && i % b->width == 0) printf("\n");
-      printf("%02x ", b->buffer[i]);
-    }
+    // for (int i = 0; i < b->bufsize; i++) {
+    //   if (i > 0 && i % b->width == 0) printf("\n");
+    //   printf("%02x ", b->buffer[i]);
+    // }
     bzero(b->buffer, b->bufsize);
 
     int current_byte = 0;
@@ -151,15 +151,15 @@ int bitmap_load(char *file, BLOCK *b, bool transparent) {
       }
     }
 
-    printf("\nRLE Encoded:\n");
+    // printf("\nRLE Encoded:\n");
 
-    int out_count = 0;
-    while (out_count < b->bufsize) {
-      printf("%02x ", b->buffer[out_count]);
-      out_count++;
-    }
+    // int out_count = 0;
+    // while (out_count < b->bufsize) {
+    //   printf("%02x ", b->buffer[out_count]);
+    //   out_count++;
+    // }
 
-    printf("\n\n");
+    // printf("\n\n");
     free(tmp_bitmap);
   }
   return OK;
