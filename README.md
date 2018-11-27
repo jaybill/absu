@@ -11,7 +11,7 @@ absU is in the very early stages of development, but a lot of things work. Here'
     * ~~Screen buffering~~
     * ~~"blocks" for drawing and bitmap loading~~
     * ~~sprites~~
-    * tiles
+    * ~~tiles~~
     * animation
     * scrolling/parallax
 * Drawing
