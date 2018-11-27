@@ -43,8 +43,9 @@
   6 /**< @brief The file supplied is not a BMP bitmap file */
 #define ERR_CANT_ALLOCATE_MEMORY \
   7 /**< @brief Can't allocate memory. Usually means there's not enough. */
-#define ERR_CANT_INIT_SOUND \
-  8 /**< @brief Can't initialize sound card. */
+#define ERR_CANT_INIT_SOUND 8 /**< @brief Can't initialize sound card. */
+#define ERR_MISMATCHED_BUFFER_SIZES \
+  9           /**< @brief Buffers are not the same size */
 #define ON 1  /**< @brief Use to represent an ON state */
 #define OFF 0 /**< @brief Use to represent an OFF state */
 

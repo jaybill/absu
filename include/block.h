@@ -46,7 +46,7 @@ typedef struct {
 int block_init(BLOCK *block, int width, int height, int block_type);
 void block_free(BLOCK *block);
 void block_copy_to_screen(SCREEN *screen, BLOCK *block, int x, int y);
-void block_copy_to_block(BLOCK *src, BLOCK *dst, int src_x, int src_y,
+int block_copy_to_block(BLOCK *src, BLOCK *dst, int src_x, int src_y,
                          int src_w, int src_h, int dst_x, int dst_y);
 
 #endif  // !ABSU_BLOCK_H

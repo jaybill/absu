@@ -89,12 +89,68 @@ void block_copy_to_screen(SCREEN *screen, BLOCK *block, int x, int y) {
   }
 }
 
-void block_copy_to_block(BLOCK *src, BLOCK *dst, int src_x, int src_y,
-                         int src_w, int src_h, int dst_x, int dst_y) {
+static int normal_to_rle(BLOCK *src, BLOCK *dst) {
+  if(src->bufsize != dst->bufsize) return ERR_MISMATCHED_BUFFER_SIZES;
+  int current_byte = 0;
+  int out_bytes = 0;
+  int current_row_bytes = 0;
+  while (current_byte < src->bufsize) {
+    if (src->buffer[current_byte] == 0x00) {
+      dst->buffer[out_bytes++] = 0x00;
+      int still_zero = true;
+      int zeroes = 0;
+      while (still_zero) {
+        if (current_row_bytes < src->width) {
+          if (src->buffer[current_byte] == 0x00) {
+            zeroes++;
+            current_byte++;
+            current_row_bytes++;
+          } else {
+            still_zero = false;
+          }
+        } else {
+          current_row_bytes = 0;
+          still_zero = false;
+        }
+      }
+      // TODO - Will need to account for what happens if there are more than
+      // 256 (or bytes) zeroes in a row
+      dst->buffer[out_bytes++] = zeroes;
+    } else {
+      dst->buffer[out_bytes++] = 0x01;
+      int start_byte = current_byte;
+
+      bool still_not_zero = true;
+      int filled = 0;
+      while (still_not_zero) {
+        if (current_row_bytes < src->width) {
+          if (src->buffer[current_byte] != 0x00) {
+            filled++;
+            current_byte++;
+            current_row_bytes++;
+          } else {
+            still_not_zero = false;
+          }
+        } else {
+          still_not_zero = false;
+          current_row_bytes = 0;
+        }
+      }
+      dst->buffer[out_bytes++] = filled;
+      memcpy(&dst->buffer[out_bytes++], &src->buffer[start_byte], filled);
+      out_bytes = out_bytes + filled - 1;
+    }
+  }
+  return OK;
+}
+
+int block_copy_to_block(BLOCK *src, BLOCK *dst, int src_x, int src_y, int src_w,
+                        int src_h, int dst_x, int dst_y) {
   for (size_t i = 0; i < src_h; i++) {
     int src_start = ((i + src_y) * src->width) + src_x;
     int dst_start = ((i + dst_y) * dst->width) + dst_x;
     memcpy(&dst->buffer[dst_start], &src->buffer[src_start],
            sizeof(BYTE) * src_w);
   }
+  return OK;
 }

@@ -1,4 +1,3 @@
-
 CC = gcc
 AR = ar
 RANLIB = ranlib
