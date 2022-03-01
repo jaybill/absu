@@ -5,6 +5,7 @@ RANLIB = $(PREFIX)ranlib
 CFLAGS = -Wall -g 
 SRC = src
 RM = rm
+CP = cp
 
 LIB = lib/libabsu.a
 OBJS = block.o \
@@ -31,8 +32,8 @@ $(LIB): $(OBJS)
 	$(RANLIB) $(LIB)rcDJGPP_PREFIX=/usr/local/my-djgpp
 
 bin/test.exe: $(OBJS)
-	$(CC) -Wall -g -Ivendor/JDAS209F test/test.c $(OBJS) \
-	vendor/JDAS209F/JUDASLIB.A \
+	$(CC) -Wall -g -Ivendor/jdas209f test/test.c $(OBJS) \
+	vendor/jdas209f/judaslib.a \
 	-o bin/test.exe
 
 clean:
@@ -43,5 +44,5 @@ clean:
 	$(RM) *.o
 
 testdata:
-	copy test/mole.bmp bin
-	copy vendor/JDAS209F/*.WAV bin
+	$(CP) test/test.bmp bin
+	$(CP) vendor/jdas209f/*.wav bin

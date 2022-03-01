@@ -36,7 +36,7 @@
 #include "../include/loop.h"
 #include "../include/types.h"
 #include "../include/video.h"
-#include "JUDAS.H"
+#include "judas.h"
 
 #define SPEED 5
 #define MAX_TICKS_UNTIL_MOVE 0
