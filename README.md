@@ -29,9 +29,9 @@ absU is in the very early stages of development, but a lot of things work. Here'
 * Simple 2D physics
 
 ## Installation
-The following instructions assume you're doing your development on a modern (as of 2018) computer running a recent version of Windows, OSX or Linux but that you'll actually compile your code inside of [DOSBox](https://www.dosbox.com/). Currently these instructions pertain specifically to Windows 10, but they should be broadly applicable to whatever OS you're using with pretty minor tweaking. While I'm certain you could get the tools and all working using DJGPP's cross compiler, you're on your own setting that up. There's a project called [build-djgpp](https://github.com/andrewwutw/build-djgpp) that can help with this, but as of this writing it only supports up to version 7.2.0 of DJGPP and it hasn't been updated for a year. 
+The following instructions assume you're doing your development on modern computer running a recent version of something UN*X-y, like Linux, OSX or Windows via something like WSL. You could probably figure out how to get it to work under Windows natively, but that's outside of the scope of this document. You could probably _also_ get it to work by having your entire development environment in DOSBox (I used to do this, actually) but again, you're on your own there. We'l be using DJGPP's cross compiler, which is a neat package that lets you target 32-bit DOS on a modern OS. You can get this running a number of different ways, including your distro's package manager, compiling it yourself, etc. My current favorite method (and by far the easiest) is a project called [build-djgpp](https://github.com/andrewwutw/build-djgpp). You can compile it yourself, but they also have prebuilt binaries for a number of platforms [here](https://github.com/andrewwutw/build-djgpp/releases).
 
-**NOTE:** absU targets the _DOSBox_ emulator, not physical computers. Old PC hardware is becoming increasingly rare and fragile. If you want to fight collectors for "vintage hardware" on eBay so you can get it home and spend your weekend resolving IRQ conflicts, then hey, go for it. It would probably work fine on an actual 386 or 486 PC running DOS. I haven't tested it, don't plan to and have no plans to support anything that isn't DOSBox.
+**NOTE:** absU targets the _DOSBox_ emulator, not physical computers. Old PC hardware is becoming increasingly rare and fragile. If you want to fight collectors for "vintage hardware" on eBay so you can get it home and spend your weekend resolving IRQ conflicts, then hey, go for it. It would probably work fine on an actual 386 or 486 PC running DOS. It should also work fine in hardware emulators like [86Box](https://86box.net/) and [PCEm](https://pcem-emulator.co.uk/). I haven't tested any of that, don't plan to and have no plans to support anything that isn't DOSBox.
 
 ### Prerequisites
 * [DOSBox](https://www.dosbox.com/)
@@ -46,23 +46,9 @@ The following instructions assume you're doing your development on a modern (as 
 
     `cd absu`
 
-1. Create a directory for your DOS drive. Let's assume you create `C:\dosdrives\c_drive`
+1. Run make to build the library and test programs:
 
-1. Create a directory inside that one for DJGPP. Let's say it's `C:\dosdrives\c_drive\djgpp`
-
-1. Unpack the DJGPP archives 
-
-1. Assuming DOSBox is installed, edit your config file. This will generally be in ` $HOME\AppData\Local\DOSBox` and be named something like `dosbox-xx.conf`. Add the following lines to the end of the file in the `[autoexec]` section. 
-    ```
-    MOUNT C C:\dosdrives\drive_c
-    MOUNT F . -t floppy
-    SET PATH=C:\DJGPP\BIN;%PATH
-    SET DJGPP=C:\DJGPP\DJGPP.ENV
-    F:
-    ```
-1. `build.bat` and `run.bat` are batch files intended to run on modern Windows. They launch DOSBox and supply it with the commands to build/run the test program. If you're using Linux or OSX you'll probably need to create a shell script that does the same thing. It should be almost identical to the batch file, as the commands are all run _inside_ DOSBox. Both batch files assume you have the DOSBox executable in your path.
-
-1. Run `build.bat` from your host operating system. You should see DOSBox open, build the test application and then run it. To run the test application with [DOS94](http://dos94.com) settings, use `run.bat`
+    `make`
 
 ### Building as part of your project
 You could just create a `deps/absu` folder in your project, drop the `src` and `include` directories from this repo into it and then compile everything as part of your application. You can easily adapt the `Makefile`, `run.bat` and `build.bat` to your build process.
