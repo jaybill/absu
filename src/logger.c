@@ -20,28 +20,25 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-/** @file block.h
- * @brief Functions for initializing and operating on a BLOCK
- */
+/** @file logger.c */
 
-#ifndef ABSU_BLOCK_H
-#define ABSU_BLOCK_H
+#include "../include/logger.h"
+#include "../include/types.h"
+#include <stdio.h>
 
-#include "video.h"
+FILE *fp;
+char *fname;
 
-typedef struct {
-  int width, height, bufsize;
-  BYTE *buffer;
-  int block_type;
-} BLOCK;
+int logger_init(char *filename){
+  fname = filename;
+  fp = fopen(filename, "w");               // opening file
+  fprintf(fp, "Logger starting.\n"); // writing data into file
+  fclose(fp);
+  return OK;
+}
 
-#define BLOCK_TYPE_NORMAL 1
-#define BLOCK_TYPE_RLE 2
-
-int block_init(BLOCK *block, int width, int height, int block_type);
-void block_free(BLOCK *block);
-void block_copy_to_screen(SCREEN *screen, BLOCK *block, int x, int y);
-int block_copy_to_block(BLOCK *src, BLOCK *dst, int src_x, int src_y,
-                         int src_w, int src_h, int dst_x, int dst_y);
-
-#endif  // !ABSU_BLOCK_H
+void logger_log(char *message){
+  fp = fopen(fname, "a");               // opening file
+  fprintf(fp, message); // writing data into file
+  fclose(fp);
+}

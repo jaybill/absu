@@ -14,6 +14,7 @@ LIB_NAME = lib/libabsu.a
 OBJS = block.o \
 	bitmap.o \
 	draw.o \
+	logger.o \
 	loop.o \
 	keyboard.o \
 	video.o 

@@ -38,6 +38,8 @@
 #include <crt0.h>
 #include <sys/nearptr.h>
 
+#include "../include/logger.h"
+
 #define LINEAR_BIT 0x4000
 
 int _crt0_startup_flags = _CRT0_FLAG_NEARPTR | _CRT0_FLAG_NONMOVE_SBRK;
@@ -82,6 +84,7 @@ void video_set_palette(int entry, COLOR color) {
 }
 
 int video_open(SCREEN *screen, int video_mode) {
+  
   __dpmi_regs reg;
   MODE_INFO *mb;
 
@@ -126,6 +129,7 @@ int video_open(SCREEN *screen, int video_mode) {
 }
 
 void video_close(SCREEN *screen) {
+  
   __dpmi_regs reg;
   reg.x.ax = 0x0003;
   __dpmi_int(0x10, &reg);
