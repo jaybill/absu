@@ -35,7 +35,7 @@ The following instructions assume you're doing your development on modern comput
 
 ### Prerequisites
 * [DOSBox](https://www.dosbox.com/)
-* [DJGPP](http://www.delorie.com/djgpp/) installed and configured in your DOSBox instance. You'll need at least the basic binutils, C and C++ packages.
+* [DJGPP](http://www.delorie.com/djgpp/) installed as a cross-compiler. From here on we'll assume you got it from [here](https://github.com/andrewwutw/build-djgpp/releases) and that it's installed in `/usr/local/djgpp`. If you put it elsewhere that's fine, just make sure that `/usr/local/djgpp/bin` contains a bunch of files that start with something like `i586-pc-msdosdjgpp-`. (This may be different if you're using a 32-bit machine.)
 
 ### Building the test program
 1. Clone this repo somewhere:
@@ -49,6 +49,8 @@ The following instructions assume you're doing your development on modern comput
 1. Run make to build the library and test programs:
 
     `make`
+
+1. You can run the test program in `/bin/test` from DOSBox.
 
 ### Building as part of your project
 You could just create a `deps/absu` folder in your project, drop the `src` and `include` directories from this repo into it and then compile everything as part of your application. You can easily adapt the `Makefile`, `run.bat` and `build.bat` to your build process.
